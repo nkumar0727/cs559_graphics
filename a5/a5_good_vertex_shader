@@ -1,0 +1,45 @@
+
+precision highp float;
+attribute vec3 position;
+attribute vec3 normal;
+uniform mat3 normalMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+varying vec3 fNormal;
+varying vec3 pos3d;
+
+uniform float time;
+
+vec3 rotate(vec3 vec_in, float angle)
+{
+  vec3 vec_out = vec_in;
+  vec_out.x=cos(angle)*vec_in.x-sin(angle)*vec_in.y;
+  vec_out.y=sin(angle)*vec_in.x+cos(angle)*vec_in.y;
+  return vec_out;
+}
+
+
+vec3 scale(vec3 vec_in, float factor) {
+  vec3 vec_out = factor * vec_in;
+  return vec_out;
+}
+
+void main()
+{
+    
+  vec3 model = position;
+  vec3 new_normal = normal;
+  float rotSpeed = 10.0;
+  float scaleSpeed = 6.0;
+  float scaleFactor = 1.2;
+  float rotateFactor = 2.0;
+  model = scale(model, scaleFactor*abs(sin(scaleSpeed*time)));
+  model = rotate(model, rotateFactor*sin(time*rotSpeed));
+  
+  //new_normal = rotate_norm(normal, rotateFactor*2.0*sin(time*rotSpeed/2.0));
+  fNormal = normalize(normalMatrix * new_normal);
+  vec4 pos = modelViewMatrix * vec4(model, 1.0);
+  gl_Position = projectionMatrix * pos;
+  pos3d = gl_Position.xyx / gl_Position.w;
+}
+ 

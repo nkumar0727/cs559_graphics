@@ -1,0 +1,32 @@
+vertex proccessor
+fragemnt proccessor
+
+what are types of identifiers used in gl shaders
+	attributes
+	constants
+	uniforms
+	varying - info that is feeding data from vertex shader onto fragment shader
+
+points that dont move - uniforms
+	light
+
+X = yes, O = no																						(not in exam)
+					vertex shader can use		fragment shader can use		host access
+const								X												X										O
+uniform							X												X										X
+varying							X* (output)							X* (input)					O
+attribute						X												O										X
+
+Exam 2015
+1) b -- up vector is perpendicular to x-vector only
+2) a
+3) b,c
+4) c
+5)
+	part a: scene has same projection and view matrix, but different model matrix
+		OR if you wanted to create a range image where the color depends on how far away from the camera
+		an object is
+
+ROBOTIC ARM EXAMPLE WILL BE ON EXAM!!! -- transformation stack
+HIERARCHICAL MODELING WILL BE ON EXAM!!! -- table example
+	-- I can use canvas-like transforms (so know those...)

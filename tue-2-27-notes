@@ -1,0 +1,79 @@
+Rasterization
+  Let low level library do it
+  Let hardware do it
+
+  Input: Primitive (screen coords)
+  Output: list of pixels "covered"
+
+  Primitives
+    points, lines, triangles (generally build things from these)
+    used to approximate curves
+
+  Rasterizing points
+    easy, just 1 pixel (we know where)
+
+    Issues:
+      different sizes? (smaller than pixel)
+      discretization? (pixels are integer grid)
+
+    Aliasing
+      real world is continuous
+      our models are discrete, so there are going to be some "errors"
+
+      How to deal with it?
+        1) Little Square Model
+          If overlap, you can
+            -pick nearest pixel to center of point
+            -cover multiple pixels
+            -partially fill pixel
+
+  Rasterizing lines
+    Historically use vector graphics hardware
+    simulate "new" pixel based (CRT)
+
+      Brezenham's Algorithm
+        Integer only line drawing
+        No divisions
+
+    Now...
+      floating point is cheap
+      division isn't too expensive
+
+      Make lines into degenerate triangles
+
+  Rasterizing polygons
+    VERY IMPORTANT Primitive
+    Determine which pixels are covered
+      do interpolation (UV, color, W, depth)
+    Scan conversion  (turning triangles into points)
+      term for rasterization (old algo not really used by hardware)
+
+      Idea:
+        scan top to bottom
+        "walk edges" (active edge list)
+        scan left to right
+
+      Pros
+        simple ops, simple inner loops
+      Cons
+        serial
+
+      Implementation by hardware
+        Box around triangle
+        for each pixel in Box
+          compute barycentric coords
+          check if in triangle
+        Do pixels in parallel (in hardware)
+          otherwise, wasteful
+        barycentric coords are useful
+
+        Barycentric coords
+          any point in plane is convex combination of vertices of triangle
+          ex) Triangle (A,B,C)
+            --> you can write point P = c_1A + c_2B + c_3C
+            where c_1 + c_2 + c_3 = 1
+              -- inside triangle, 0 <= c_1,c_2,c_3 <= 1
+
+
+  c(x_1) = ax_1 + b
+  c(x_2) = ax_2 + b

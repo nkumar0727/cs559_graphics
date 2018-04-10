@@ -1,0 +1,31 @@
+Graphics Town TODO
+
+Programming Assignment 7
+  Draw 4 objects
+  Make sure all 4 objects have cool lighting
+    diffuse
+    specular
+  Make sure all 4 objects incorporate movement in some way
+
+  Theme: Normal Neighborhood
+    Roads with stop signs
+    Houses
+    Bus - travels in a path to each stop, but does not operate at night
+    Children Walking in Bus from houses?
+    Actual moving sun?
+    Clouds?
+    Changing skycolor?
+
+  Progress:
+    -made custom house object with roof, base, door
+    -implemented door opening/closing system
+  TODO:
+    -fix normals for pyramid [ IP... ]
+    -create roads/grass surrounding house [TEXTURES IN P8]
+    -create surrounding sky wrt time of day [TEXTURES IN P8]
+    -create Bus Object
+      --> has its own route and stuff
+
+
+Programming Assignment 8
+Programming Assignment 9

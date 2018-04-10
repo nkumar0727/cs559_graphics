@@ -1,0 +1,68 @@
+precision highp float;
+varying vec3 fNormal;
+
+varying vec3 pos3d;
+uniform float time;
+
+
+float phong(float intensity, vec3 normal, vec3 light, vec3 lightBounce, float p, float diff1, float diff2) {
+  float res1 = diff1 * max(0.0, dot(normal, light));
+  float res2 = diff2 * pow(dot(normal, lightBounce + light), p);
+  return intensity * (res1 + res2);
+}
+
+vec3 rotateY(vec3 in_vec, float angle, float rotSpeed) {
+  vec3 res = in_vec;
+  res.x = in_vec.x*(cos(rotSpeed*angle)) + in_vec.x*(sin(rotSpeed*angle));
+  res.z = in_vec.z*(cos(rotSpeed*angle))- in_vec.x*(sin(rotSpeed*angle));
+  return res;
+}
+
+vec3 rotateX(vec3 in_vec, float angle, float rotSpeed) {
+  vec3 res = in_vec;
+  res.y = in_vec.y*(cos(rotSpeed*angle)) - in_vec.z*(sin(rotSpeed*angle));
+  res.z = in_vec.z*(cos(rotSpeed*angle)) + in_vec.y*(sin(rotSpeed*angle));
+  return res;
+}
+
+
+void main()
+{
+  float rotSpeed = 40.0;
+  
+  vec3 dir = vec3(0.3,0.4,1); // light direction
+  vec3 dir2 = vec3(1,0.4,0.2); // light 2
+  dir = rotateY(dir, time, rotSpeed);
+  dir2 = rotateX(dir2, time, rotSpeed);
+  float rSpeed = 3.0;
+  float gSpeed = 4.0;
+  float bSpeed = 2.0;
+
+  float rCol = abs(sin(rSpeed*time + 3.14));
+  float gCol = abs(sin(gSpeed*time + 1.38) + 0.2);
+  float bCol = abs(sin(bSpeed*time + 6.28));
+
+  vec3 color = vec3(pos3d.x*rCol, 0.5*pos3d.y*gCol, bCol);
+  
+  vec3 l = normalize(dir);
+  vec3 l2 = normalize(dir2);
+  vec3 n = normalize(fNormal);
+  vec3 v = normalize(-1.0*fNormal);
+  
+  float diff11 = 0.2;
+  float diff12 = 0.1;
+  float diff21 = 0.2;
+  float diff22 = 0.1;
+  
+  float maxIntensity = 12.0;
+  float dFac1 = dot(l,n);
+  float dFac2 = dot(l2,n);
+  float I1 = dFac1 * maxIntensity;
+  float I2 = dFac2 * maxIntensity;
+  float p = 6.0;
+
+  float phong_color1 = phong(I1, n, l, v, p, diff11, diff12);
+  float phong_color2 = phong(I2, n, l2, v, p, diff21, diff22);
+  gl_FragColor = vec4(phong_color1*phong_color2*color, 1.0);
+	// https://goo.gl/UZSgrc
+}

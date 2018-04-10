@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>CS 559: Assignment 1</title>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+</body>
+<script type="text/javascript">
+  "use strict"
+
+  function setup() {
+
+    const radius = 100;
+    const centerX = 250;
+    const centerY = 250;
+    const slack = 55;
+    const tRad = 30;
+    const tAngle = Math.PI/6;
+    const rotAngle = Math.PI/1024;
+    const xRot = Math.cos(rotAngle);
+    const yRot = Math.sin(rotAngle);
+    const txShift = Math.cos(tAngle);
+    const tyShift = Math.sin(tAngle);
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = "black";
+    context.strokeStyle = "black";
+    context.lineWidth = 5;
+    context.fill();
+    context.stroke();
+
+    var pts = [centerX, centerY - tRad,
+      centerX + tRad*txShift, centerY + tRad*tyShift,
+      centerX - tRad*txShift, centerY + tRad*tyShift];
+
+    function update(pts) {
+      for(var i = 0; i < pts.length; i=i+2) {
+        pts[i] -= centerX;
+        pts[i+1] -= centerY;
+      }
+
+      for(var i = 0; i < pts.length; i=i+2) {
+        pts[i] = pts[i]*xRot - pts[i+1]*yRot;
+        pts[i+1] = pts[i]*yRot + pts[i+1]*xRot;
+      }
+
+      for(var i = 0; i < pts.length; i=i+2) {
+        pts[i] += centerX;
+        pts[i+1] += centerY;
+      }
+    };
+
+    function draw(pts) {
+      var context = canvas.getContext("2d");
+      context.clear();
+
+      context.beginPath();
+      context.moveTo(pts[0], pts[1]);
+      context.lineTo(pts[2], pts[3]);
+      context.lineTo(pts[4], pts[5]);
+      context.closePath();
+      context.fillStyle = "yellow";
+      context.fill();
+
+      // update
+      update(pts);
+      setTimeout(window.requestAnimationFrame(draw(pts)), 1000);
+    };
+
+    window.requestAnimationFrame(draw(pts));
+  };
+
+  window.onload = setup;
+
+
+
+/*
+  // Quadratic Bezier curves.
+  // Resource used: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes
+  context.fillStyle = "red";
+  context.strokeStyle = "black";
+  context.lineWidth = 2;
+
+  context.beginPath();
+  context.moveTo(centerX, centerY - radius);
+  context.quadraticCurveTo(centerX - slack, centerY, centerX, centerY + radius);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(centerX, centerY - radius);
+  context.quadraticCurveTo(centerX + slack, centerY, centerX, centerY + radius);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(centerX - radius, centerY);
+  context.quadraticCurveTo(centerX, centerY - slack, centerX + radius, centerY);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(centerX - radius, centerY);
+  context.quadraticCurveTo(centerX, centerY + slack, centerX + radius, centerY);
+  context.fill();
+
+  // diagonals
+  const thetaShift = Math.sqrt(2) / 2;
+  var diagShift = radius * thetaShift;
+  var slackShift = slack * thetaShift;
+  context.beginPath();
+  context.moveTo(centerX + diagShift, centerY - diagShift);
+  context.quadraticCurveTo(centerX - diagShift + slackShift,
+    centerY - diagShift + slackShift, centerX - diagShift, centerY + diagShift);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(centerX + diagShift, centerY - diagShift);
+  context.quadraticCurveTo(centerX + diagShift - slackShift,
+    centerY + diagShift - slackShift, centerX - diagShift, centerY + diagShift);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(centerX - diagShift, centerY - diagShift);
+  context.quadraticCurveTo(centerX + diagShift - slackShift,
+    centerY - diagShift + slackShift, centerX + diagShift, centerY + diagShift);
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(centerX - diagShift, centerY - diagShift);
+  context.quadraticCurveTo(centerX - diagShift + slackShift,
+    centerY + diagShift - slackShift, centerX + diagShift, centerY + diagShift);
+  context.fill();
+  };
+  */
+</script>
+
+</html>

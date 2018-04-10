@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="description" content="E1 - Better minimal Canvas Example">
+  <meta charset="utf-8">
+  <title>HTML Test</title>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="200" height="200"></canvas>
+  <input id="slider" type="range" min="0" max="100" />
+</body>
+
+<script> "use strict"
+  function setup() {
+    
+    // find te canvas and slider ONCE; initialize the slider
+    var canvas = document.getElementById("myCanvas");
+    var slider = document.getElementById("slider");
+    slider.value = 20;
+
+    // local draw function that gets called repeatedly on input
+    function draw() {
+
+      // aquire the new context of the canvas
+      var context = canvas.getContext("2d");
+      canvas.width = canvas.width; // IMPORTANT: This line corrects the canvas
+
+      // draw the rectangle based on where the slider is
+      context.beginPath();
+      context.rect(slider.value, 50, 50, 50);
+      context.fill();
+    };
+
+    // listen for change in slider; then redraw
+    slider.addEventListener("input", draw);
+    draw();
+  };
+  window.onload = setup;
+</script>
+
+</html>

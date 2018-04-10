@@ -1,0 +1,72 @@
+PERSPECTIVE INSIDE A ROOM
+
+Create objects in the world
+  Stationary...
+    Door with knob
+    Shelf
+    Chair
+    Rug 
+  In motion...
+    Ceiling fan (constant rotation)
+
+Create moving character
+  Build...
+    -red stick figure (with some depth) made from triangles
+    -whenever movement key is pressed, character will
+    resume walking animation to next state (regardless of walking
+    direction; easy on me, should be funny...)
+  
+  Movement...
+    -press W to move "forwards"
+    -press S to move "backwards"
+    -press A to move "left"
+    -press D to move "right"
+
+2 Views
+  -World view
+  -Perspective view (1st person of character)
+
+Toggle Button for Perspective viewing mode... (SPACE?)
+  -Once pressed, the mouse will enable the user to see from
+  the eyes of the character
+  -Moving mouse left and right will change what is being seen
+
+Set limit for movement
+  -cannot move past certain coordinates in box
+    --> perhaps make objects very far away, but movement
+    space very constrained so that I don't have to deal with
+    close/far object cases
+
+Enable limit for perspective viewing
+  -only draw things that are close to me
+
+
+ROUGH ROADMAP
+
+1) Map out world on pen/paper with all objects, all coordinates 
+  a) stationary
+  b) moving objects
+
+  NOTE: from here, a user stack of transformations would be benefitial...
+
+  c) make world view on canvas with this stuff (orthogonal)
+    -- this should be fixed in place
+
+2) Get set on making character (no movement)
+  NOTE: use a small amount of triangle
+  a) get all triangles and coordinates 
+  b) create some easy interface to dynamically transform triangle pts and draw
+  c) Note: put a camera inside the character's head (for POV view later...)
+
+3) Make character with some in-place movement (on button press or something)
+  a) map out simple movement scheme on paper
+  b) create simple movement scheme with arms and legs
+  
+4) Create ASDW movement 
+  ... self explanatory 
+
+5) Implement Perspective window
+  -- This should rotate the camera placed in character's head
+  -- This should ALSO alter what appears in the perspective window
+  a) Objects that are close should not be drawn, objects that are far
+    should also not be drawn

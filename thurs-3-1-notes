@@ -1,0 +1,26 @@
+Z-buffer Algorithm
+
+clear all pixels to "farthest value" (-inf)
+
+for each triangle
+  for each pixel
+    if new Z > old Z // in front
+      write new color and Z
+
+Vertex Attributes - interface with these in programming language
+  Location (x,y,z)
+  Color (r,g,b)
+  Normal (n_x, n_y, n_z)
+  Temperature T
+  Density
+
+Vertex Uniforms - identifiers
+  T_camera
+  T_projection
+  time
+  light
+
+Const
+  PI
+
+Varying - used to communicate info from vertex processor to (fragment - pixels that result from rasterization) pixel processor

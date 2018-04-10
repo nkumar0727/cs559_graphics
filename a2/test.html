@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+  <body>
+    <canvas id="myCanvas" width="800" height="800"></canvas>
+    <br/>
+    <input id="slider1" type="range" min="10" max="200"/>
+    <br/>
+    <input id="slider2" type="range" min="30" max="100" step=".05"/>
+    <script src="ellipse.js"></script>
+  </body>
+  <script> "use strict"
+    function setup() {
+      var center = [400, 400];
+      var canvas = document.getElementById("myCanvas");
+      var cSlider = document.getElementById("slider1");
+      var eSlider = document.getElementById("slider2");
+      cSlider.value = 50;
+      eSlider.value = 30;
+      var ctx = canvas.getContext("2d");
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 4;
+
+      var c1 = cSlider.value; // this is c
+      var e1 = eSlider.value / 100; // this is e = c/a
+      var a1 = c1 / e1;
+      var b1 = Math.sqrt(a1 * a1 - c1 * c1);
+    
+      var p = 9;
+      var m = 1;
+      var c = "black";
+      //var earth = new Planet(center, e1, c1, p, m, c);
+      var path = new EllipsePath(center[0], center[1], a1, b1, ctx);
+      canvas.width = canvas.width;
+   
+      function draw() {
+        canvas.width = canvas.width;
+        //path.ctx = document.getContext("2d");
+        var c = cSlider.value; // this is c
+        var e = eSlider.value / 100; // this is e = c/a
+        path.a = c / e;
+        path.b = Math.sqrt(path.a * path.a - c * c);
+        path.draw();
+        //window.requestAnimationFrame(draw);
+      };
+
+      slider1.addEventListener("input", draw);
+      slider2.addEventListener("input", draw);
+      path.draw();
+      //window.requestAnimationFrame(draw);
+    };
+
+    window.onload = setup;
+  </script>
+</html>

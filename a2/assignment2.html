@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+  <!--
+      Author: Nikhil Kumar
+       ID: 9073489388
+       Course: CS 559 Computer Graphics
+       Assignment: Assignment 2
+  -->
+  <body>
+    <canvas id="myCanvas" width="900" height="600"></canvas>
+    <br/>
+    <input id="slider" type="range" min="4" max="10" step="0.2">
+    <br/>
+    This slider scales the orbit velocity of the planets. <br/>
+    Planet sizes, velocities, orbits, periods, etc... are not to scale. <br/>
+    The individual planet rotation is exaggerated for visual purposes.
+    <script src="planet.js"></script>
+  </body>
+  <script> "use strict"
+    function setup() {
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var speed = document.getElementById("slider");
+      speed.value = 1;
+      var sunLoc = [350, 300];
+
+      var planets = [];
+      planets.push(new Planet("Earth", 0.5, 200, 2000, 10, 10, "blue", false, ctx));
+      planets.push(new Planet("Mars", 0.6, 250, 1000, 20, 7, "red", false, ctx));
+      planets.push(new Planet("Jupiter", 0.7, 350, 5000, 60, 25, "brown", true, ctx));
+      planets.push(new Planet("Saturn", 0.7, 400, 4000, 100, 17, "orange", true, ctx));
+
+      function draw() {
+        canvas.width = canvas.width;
+        ctx.fillStyle = "black";
+        ctx.rect(0, 0, 900, 600);
+        ctx.fill();
+        // save origin @ sun's center (focal point of ellipse)
+        ctx.translate(sunLoc[0], sunLoc[1]);
+        drawSun(ctx);
+
+        // shift origin to "center" of all ellipses (center of canvas)
+        // this is the "base" coordinate system
+        ctx.translate(100, 0);
+
+        // draw planet and its path
+        for(var i = 0; i < planets.length; ++i) {
+          planets[i].drawOrbit();
+          planets[i].drawPlanet(speed.value);
+        }
+        window.requestAnimationFrame(draw);
+      };
+      window.requestAnimationFrame(draw);
+    };
+
+    window.onload = setup;
+  </script>
+</html>

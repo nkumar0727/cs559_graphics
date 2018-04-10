@@ -1,0 +1,43 @@
+#ifdef VS 
+ 
+precision highp float;
+attribute vec3 position;
+attribute vec3 normal;
+uniform mat3 normalMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+varying vec3 fNormal;
+varying vec3 fPosition;
+varying vec3 pos3d;
+
+void main()
+{
+  fNormal = normalize(normalMatrix * normal);
+  vec4 pos = modelViewMatrix * vec4(position, 1.0);
+  fPosition = pos.xyz;
+  gl_Position = projectionMatrix * pos;
+  pos3d.xyz = gl_Position.xyz / gl_Position.w;
+}
+ 
+#else 
+ 
+precision highp float;
+uniform float time;
+uniform vec2 resolution;
+varying vec3 fPosition;
+varying vec3 fNormal;
+
+varying vec3 pos3d;
+
+void main()
+{
+  vec3 light = vec3(0,-0.8,1);
+  vec3 color = vec3(0.8,0.4,0.0);
+  
+  float diffuse = .5 + dot(fNormal,light);
+
+  gl_FragColor = vec4(color*diffuse, 1.0);
+//https://goo.gl/62vyiz
+}
+ 
+#endif

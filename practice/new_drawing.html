@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+  <body>
+    <canvas id="myCanvas" width="600" height="600"></canvas>
+    <br/>
+    <input id="slider" type="range" min="0" max="550"/>
+  </body>
+  <script> "use strict"
+    function setup() {
+
+      // setup information
+      var y = 50;
+      var canvas = document.getElementById("myCanvas");
+      var slider = document.getElementById("slider");
+      slider.value = 20;
+      
+      // repeatedly called draw function
+      function draw() {
+        var context = canvas.getContext("2d");
+        canvas.width = canvas.width;
+        var x = slider.value;
+        context.beginPath();
+        context.rect(x, y, 20, 20);
+        context.fill();
+
+        // make the rectangle's y position go down with wrap-around
+        y = (y + 3) % 580;
+        window.requestAnimationFrame(draw);
+      };
+
+      // this will call draw for us, and update all the time
+      // no need for event listener
+      window.requestAnimationFrame(draw);
+    };
+
+    window.onload = setup;
+  </script>
+</html>

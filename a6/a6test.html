@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta name="description" content="Spinning cube example">
+    <meta charset="utf-8">
+    <title>WebGL cube drawn w/indexed vertex list</title>
+    <script src="./a6start.js"></script>
+    <script id="vs" type="not-js">
+      attribute vec3 vPosition;
+      attribute vec3 vColor;
+      varying vec3 fColor;
+      uniform mat4 uMVP;
+
+      void main(void) {
+        gl_Position = uMVP * vec4(vPosition, 1.0);
+	    fColor = vColor;
+      }
+    </script>
+
+    <script id="fs" type="not-js">
+      precision highp float;
+      varying vec3 fColor;
+
+      void main(void) {
+	     gl_FragColor = vec4(fColor, 1.0);
+      }
+    </script>
+
+  </head>
+
+  <body onload="start()">
+    <canvas id="mycanvas" width="500" height="500"></canvas><br>
+    <input id="slider1" type="range" min="-100" max="100" />
+    <input id="slider2" type="range" min="-100" max="100" />
+    <script src="http://graphics.cs.wisc.edu/JS/twgl-full.min.js"></script>
+  </body>
+
+</html>

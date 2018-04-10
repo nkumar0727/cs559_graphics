@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<!-- Author: Nikhil Kumar
+     ID: 9073489388
+     Course: CS 559 Computer Graphics
+     Assignment: Assignment 1
+   -->
+  <head>
+    <meta charset="utf-8">
+    <title>CS 559: Assignment 1</title>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+  </body>
+  <script type="text/javascript"> "use strict"
+
+    // draw the ovular looking shapes around the circle
+    // if stroke is true, fill in the shapes
+    // otherwise draw the outline
+  function start() {
+      const thetaShift = Math.sqrt(2)/2;
+      const radius = 200;
+      const centerX = 250;
+      const centerY = 250;
+      const slack = 100;
+      var canvas = document.getElementById("myCanvas");
+      var context = canvas.getContext("2d");
+
+      // Nested functions inspired fomo:
+      // http://graphics.cs.wisc.edu/WP/tutorials/when-do-i-draw-some-comments-on-code-organization/
+
+      function drawCurves(stroke) {
+        // Quadratic curves.
+        // Resource used: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/quadraticCurveTo
+        context.fillStyle = "red";
+        context.strokeStyle = "black";
+        context.lineWidth = 2;
+
+        context.beginPath();
+        context.moveTo(centerX, centerY - radius);
+        context.quadraticCurveTo(centerX - slack, centerY, centerX, centerY + radius);
+        if(!stroke)
+          context.fill();
+        else
+          context.stroke();
+
+        context.beginPath();
+        context.moveTo(centerX, centerY - radius);
+        context.quadraticCurveTo(centerX + slack, centerY, centerX, centerY + radius);
+        if(!stroke)
+            context.fill();
+          else
+            context.stroke();
+
+        context.beginPath();
+        context.moveTo(centerX - radius, centerY);
+        context.quadraticCurveTo(centerX, centerY - slack, centerX + radius, centerY);
+        if(!stroke)
+          context.fill();
+        else
+          context.stroke();
+
+        context.beginPath();
+        context.moveTo(centerX - radius, centerY);
+        context.quadraticCurveTo(centerX, centerY + slack, centerX + radius, centerY);
+        if(!stroke)
+          context.fill();
+        else
+          context.stroke();
+
+        // diagonals
+        var diagShift = radius * thetaShift;
+        var slackShift = slack * thetaShift;
+        context.beginPath();
+        context.moveTo(centerX + diagShift, centerY - diagShift);
+        context.quadraticCurveTo(centerX - diagShift + slackShift,
+          centerY - diagShift + slackShift, centerX - diagShift, centerY + diagShift);
+          if(!stroke)
+            context.fill();
+          else
+            context.stroke();
+
+        context.beginPath();
+        context.moveTo(centerX + diagShift, centerY - diagShift);
+        context.quadraticCurveTo(centerX + diagShift - slackShift,
+          centerY + diagShift - slackShift, centerX - diagShift, centerY + diagShift);
+          if(!stroke)
+            context.fill();
+          else
+            context.stroke();
+
+        context.beginPath();
+        context.moveTo(centerX - diagShift, centerY - diagShift);
+        context.quadraticCurveTo(centerX + diagShift - slackShift,
+          centerY - diagShift + slackShift, centerX + diagShift, centerY + diagShift);
+        if(!stroke)
+            context.fill();
+        else
+            context.stroke();
+
+        context.beginPath();
+        context.moveTo(centerX - diagShift, centerY - diagShift);
+        context.quadraticCurveTo(centerX - diagShift + slackShift,
+          centerY + diagShift - slackShift, centerX + diagShift, centerY + diagShift);
+        if(!stroke)
+            context.fill();
+        else
+            context.stroke();
+      };
+
+      // main circle
+      // Resource used: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = "black";
+      context.strokeStyle = "black";
+      context.lineWidth = 5;
+      context.fill();
+      context.stroke();
+
+      drawCurves(false);
+
+      context.fillStyle = "red";
+      context.strokeStyle = "black";
+
+      // center circle
+      context.beginPath();
+      context.arc(centerX, centerY, radius/20, 0, 2 * Math.PI, false);
+      context.fillStyle = "black";
+      context.fill();
+
+      drawCurves(true);
+    };
+
+    window.onload = start;
+
+  </script>
+</html>
