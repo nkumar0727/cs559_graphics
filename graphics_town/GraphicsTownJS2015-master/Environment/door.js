@@ -18,7 +18,7 @@ var Door = undefined;
     var buffers = undefined;
 
     // Constructor for Door (opens and closes over time)
-    Door = function DoorRect(name, position, height, width, depth, color, size) {
+    Door = function DoorRect(name, position, height, width, depth, color, dirFace, size) {
       this.name = name;
       this.position = position || [0,0,0];
       this.size = size || 1.0;
@@ -26,6 +26,9 @@ var Door = undefined;
       this.width = width || 0.25;
       this.depth = depth || 0.05;
       this.color = color || [.8,.7,.2];
+
+      this.dirFace = dirFace;
+
       this.lastOpened = -1; // to be set in init
       this.openTime = Math.random() * 5000;
       this.doorAngle = 0;
@@ -74,8 +77,24 @@ var Door = undefined;
     Door.prototype.draw = function(drawingState) {
         // apply transforms for opening and closing
         //-- use drawingState.realtime
-        var modelM = twgl.m4.scaling([this.size,this.size, this.size]);
-        twgl.m4.setTranslation(modelM, this.position, modelM);
+        var modelM = twgl.m4.translation(this.position);
+        twgl.m4.scale(modelM, [this.size, this.size, this.size], modelM);
+        switch(this.dirFace) {
+            case 3:
+                // rotate about y axis -pi/2
+                twgl.m4.rotateY(modelM, Math.PI/2, modelM);
+                break;
+            case 2:
+                // rotate about y axis pi
+                twgl.m4.rotateY(modelM, Math.PI, modelM);
+                break;
+            case 1:
+                // rotate about y axis pi/2
+                twgl.m4.rotateY(modelM, -Math.PI/2, modelM);
+                break;
+            // default is 0; do nothing
+        }
+
         var gl = drawingState.gl;
         if(this.doorStatus == 0 && drawingState.realtime - this.lastOpened > this.openTime) {
           this.doorAngle = 0;
@@ -97,6 +116,7 @@ var Door = undefined;
           }
         }
         twgl.m4.rotateY(modelM, this.doorAngle, modelM);
+
         gl.useProgram(shaderProgram.program);
         twgl.setBuffersAndAttributes(gl, shaderProgram, buffers);
         twgl.setUniforms(shaderProgram, {

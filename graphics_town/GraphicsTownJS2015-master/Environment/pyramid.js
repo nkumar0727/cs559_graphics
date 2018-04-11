@@ -18,7 +18,7 @@ var Pyramid = undefined;
     var buffers = undefined;
 
     // constructor for Pyramid
-    Pyramid = function Pyramid(name, position, height, width, depth, color, size) {
+    Pyramid = function Pyramid(name, position, height, width, depth, color, dirFace, size) {
         this.name = name;
         this.position = position || [0,0,0];
         this.size = size || 1.0;
@@ -26,6 +26,8 @@ var Pyramid = undefined;
         this.width = width || 0.25;
         this.depth = depth || 0.25;
         this.color = color || [.2,.3,.8];
+
+        this.dirFace = dirFace;
     }
     Pyramid.prototype.init = function(drawingState) {
         var gl = drawingState.gl;
@@ -70,6 +72,25 @@ var Pyramid = undefined;
     };
     Pyramid.prototype.draw = function(drawingState) {
         var modelM = twgl.m4.scaling([this.size,this.size, this.size]);
+        // dirFace                      // 0 means door faces [0,0,1]
+                                        // 1 means door faces [1,0,0]
+                                        // 2 means door faces [0,0,-1]
+                                        // 3 means door faces [-1,0,0]
+        switch(this.dirFace) {
+            case 3:
+                // rotate about y axis -pi/2
+                twgl.m4.rotateY(modelM, -Math.PI/2, modelM);
+                break;
+            case 2:
+                // rotate about y axis pi
+                twgl.m4.rotateY(modelM, Math.PI, modelM);
+                break;
+            case 1:
+                // rotate about y axis pi/2
+                twgl.m4.rotateY(modelM, Math.PI/2, modelM);
+                break;
+            // default is 0; do nothing
+        }
         twgl.m4.setTranslation(modelM, [this.position[0], this.position[1],
           this.position[2]], modelM);
         var gl = drawingState.gl;

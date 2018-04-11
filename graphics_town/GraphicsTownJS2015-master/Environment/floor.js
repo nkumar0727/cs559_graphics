@@ -14,14 +14,10 @@ var centerSz = centerSz || 5;
     var vertexPos = [
         -planeSz, 0, -planeSz, -planeSz, 0, planeSz, planeSz, 0, planeSz, // black street
         planeSz, 0, planeSz, planeSz, 0, -planeSz, -planeSz, 0, -planeSz,
-        -centerSz, 0, -centerSz, -centerSz, 0, centerSz, centerSz, 0, centerSz, // center grass
-        centerSz, 0, centerSz, centerSz, 0, -centerSz, -centerSz, 0, -centerSz,
     ];
     var vertexColor = [
       0,0,1, 0,0,1, 0,0,1, // black street
       0,0,1, 0,0,1, 0,0,1,
-      0.4,0.9,0, 0.4,0.9,0, 0.4,0.9,0,  // center grass
-      0.4,0.9,0, 0.4,0.9,0, 0.4,0.9,0,
     ];
 
     var shaderProgram = undefined;
@@ -38,10 +34,6 @@ var centerSz = centerSz || 5;
               vpos : {
                 numComponents:3,
                 data:vertexPos
-              },
-              vcolor : {
-                numComponents:3,
-                data:vertexColor
               }
             };
             buffers = twgl.createBufferInfoFromArrays(gl,arrays);

@@ -93,7 +93,7 @@ window.onload = function() {
         camera : twgl.m4.identity(),
         sunDirection : [0,1,0]
     }
-    
+
 
     // information for the cameras
     var lookAt = [0,0,0];
@@ -134,10 +134,12 @@ window.onload = function() {
         }
         lastTime = curTime;
 
-        // first, let's clear the screen
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.enable(gl.DEPTH_TEST);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // moved down to set appropriate background color based on time of day
+    /*
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    */
 
         // figure out the transforms
         var projM = twgl.m4.perspective(fov, 1, 0.1, 100);
@@ -169,10 +171,10 @@ window.onload = function() {
             viewM = twgl.m4.inverse(cameraM);
         }else if (uiMode.value == "Fly") {
 
-            if (keysdown[65] || keysdown[37]) { 
-                driveTheta += .02; 
-            }else if (keysdown[68] || keysdown[39]) { 
-                driveTheta -= .02; 
+            if (keysdown[65] || keysdown[37]) {
+                driveTheta += .02;
+            }else if (keysdown[68] || keysdown[39]) {
+                driveTheta -= .02;
             }
 
             if (keysdown[38]) { driveXTheta += .02; }
@@ -216,8 +218,16 @@ window.onload = function() {
             realtime : realtime
         }
 
+        // set backround color appropriate to time of day
+        var dot = drawingState.sunDirection[1];
+        if(dot < 0)
+            dot *= -1;
+        gl.clearColor(0.61*dot, 0.74*dot, 1.0*dot, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
         // initialize all of the objects that haven't yet been initialized (that way objects can be added at any point)
-        grobjects.forEach(function(obj) { 
+        grobjects.forEach(function(obj) {
             if(!obj.__initialized) {
                 if(isValidGraphicsObject(obj)){
                     obj.init(drawingState);
