@@ -27,8 +27,6 @@ var Pyramid = undefined;
         this.depth = depth || 0.25;
         this.color = color || [.2,.3,.8];
 
-        this.flagAngle = 0;
-
         this.dirFace = dirFace;
     }
     Pyramid.prototype.init = function(drawingState) {
@@ -37,14 +35,17 @@ var Pyramid = undefined;
             shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
         }
         if(!buffers) {
+          var w = this.width; var h = this.height; var d = this.depth;
+          var wd = w*d; var wh = w*h; var dh = d*h;
+          var wd2 = 2*wd; var dh2 = 2*dh; var wh2 = 2*wh;
             var arrays = {
                 //  3 components = triangles
                 vpos: { numComponents: 3, data: [
                     // make sure that these are in same order as cube triangles
-                    0,0,0, 1,0,0, 0.5,1,0.5,  // back
-                    1,0,0, 1,0,1, 0.5,1,0.5,  // right
-                    1,0,1, 0,0,1, 0.5,1,0.5,  // front
-                    0,0,1, 0,0,0, 0.5,1,0.5,  // left
+                    0,0,0, w,0,0, w/2,h,d/2,  // back
+                    w,0,0, w,0,d, w/2,h,d/2,  // right
+                    w,0,d, 0,0,d, w/2,h,d/2,  // front
+                    0,0,d, 0,0,0, w/2,h,d/2,  // left
                     /*
                     -w, 0.0, -d,   w, 0.0, -d,   0.0, h, 0.0,
                      w, 0.0, -d,   w, 0.0, d,    0.0, h, 0.0,
@@ -54,10 +55,10 @@ var Pyramid = undefined;
                 ]},
                 vnormal : { numComponents: 3, data : [
                     // normals for pyramid part -- fix these...
-                    0,-1,1, 0,-1,1, 0,-1,1,
-                    -1,-1,0, -1,-1,0, -1,-1,0,
-                    0,-1,-1, 0,-1,-1, 0,-1,-1,
-                    1,-1,0, 1,-1,0, 1,-1,0,
+                    0,-wd2,wh2, 0,-wd2,wh2, 0,-wd2,wh2,
+                    -dh2,-wd2,0, -dh2,-wd2,0, -dh2,-wd2,0,
+                    0,-wd2,-wh2, 0,-wd2,-wh2, 0,-wd2,-wh2,
+                    dh2,-wd2,0, dh2,-wd2,0, dh2,-wd2,0,
                     /*
                     0,0.5,-1.0, 0,0.5,-1.0, 0,0.5,-1.0,  // trignale 1
                     1.0,0.5,0.0, 1.0,0.5,0.0, 1.0,0.5,0.0,  // triangle 2
@@ -70,8 +71,7 @@ var Pyramid = undefined;
         }
     };
     Pyramid.prototype.draw = function(drawingState) {
-        var modelM = twgl.m4.identity();
-        //twgl.m4.scale(modelM, [this.size, this.size, this.size], modelM);
+        var modelM = twgl.m4.scaling([this.size,this.size, this.size]);
         // dirFace                      // 0 means door faces [0,0,1]
                                         // 1 means door faces [1,0,0]
                                         // 2 means door faces [0,0,-1]
@@ -89,24 +89,9 @@ var Pyramid = undefined;
                 // rotate about y axis pi/2
                 twgl.m4.rotateY(modelM, Math.PI/2, modelM);
                 break;
-            case 4:
-                // SPECIAL; rotate about Z-axis
-                twgl.m4.rotateZ(modelM, Math.PI/2, modelM);
-                break;
-            case 5:
-                // SPECIAL :rotate about Z-axis other way
-                twgl.m4.rotateZ(modelM, -Math.PI/2, modelM);
-                break;
             // default is 0; do nothing
         }
         twgl.m4.setTranslation(modelM, this.position, modelM);
-
-        if(this.dirFace == 4 || this.dirFace == 5) {// if this is a flag, rotate about Y in circle
-            twgl.m4.rotateX(modelM, this.flagAngle, modelM);
-            this.flagAngle += 0.01;
-        }
-
-        twgl.m4.scale(modelM, [this.width,this.height, this.depth], modelM);
         var gl = drawingState.gl;
         gl.useProgram(shaderProgram.program);
         twgl.setBuffersAndAttributes(gl, shaderProgram, buffers);

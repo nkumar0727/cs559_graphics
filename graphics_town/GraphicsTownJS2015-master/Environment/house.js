@@ -5,7 +5,7 @@ var grobjects = grobjects || [];
 
 // allow the constructor to be "leaked" out
 var House = undefined;
-
+var houseCount = 0; // total number of houses; used as an identifier
 // this is a function that runs at loading time (note the parenthesis at the end)
 (function() {
     "use strict";
@@ -16,29 +16,37 @@ var House = undefined;
     var shaderProgram = undefined;
     var buffers = undefined;
 
-    var houseCount = 0; // total number of houses; used as an identifier
+
 
     // constructor for Cubes
     House = function House(name, position, height, width, depth, doorWidth,  dirFace,
       baseColor, roofColor, doorColor, size) {    // CHANGE: color -> baseColor
         var downScale = 0.75;
         var doorThick = 0.25;
-        this.name = name;
+        this.name = "house"+houseCount;
         this.position = position || [0,0,0];
         this.size = size || 1.0;
         // dirFace                      // 0 means door faces [0,0,1]
                                         // 1 means door faces [1,0,0]
                                         // 2 means door faces [0,0,-1]
                                         // 3 means door faces [-1,0,0]
+
+        var rotDoorCoords = [position[0]+ width/2 - doorWidth/2, position[1], position[2]+depth];
+
+            //rotDoorCoords[z, y, x];
+            /*
+        if(dirFace == 1)
+            rotDoorCoords[-position[2]+depth, position[1],position[0]+(width/2 - doorWidth/2)];
+        console.log(rotDoorCoords);
+        */
       //  this.cube = new Cube("cube" + houseCount, [0.0,0.5,0.0], 1, roofColor | [0.7,0.2,0.2]);
       //Rect = function Rect(name, position, height, width, depth, color, size) {
         this.base = new Rect("rect"+houseCount, position, height, width, depth, baseColor, dirFace | 0, size);
       //  Pyramid = function Pyramid(name, position, height, width, color, size) {
-        this.roof = new Pyramid("pyramid"+houseCount, [position[0],position[1] + height,position[2]],
+        this.roof = new Pyramid("pyramid"+houseCount, [position[0], position[1]+height, position[2]],
           height * downScale, width, depth,roofColor, dirFace | 0, size);
-        this.door = new Door("d_rect"+houseCount, [position[0] + width/2 - doorWidth/2,
-          position[1], position[2] + depth], height * downScale,
-          doorWidth, doorThick, doorColor, dirFace | 0);
+        this.door = new Door("d_rect"+houseCount, rotDoorCoords, height * downScale,
+          doorWidth, doorThick, doorColor, dirFace | 0, width, depth);
         houseCount += 1;
     }
     House.prototype.init = function(drawingState) {
@@ -75,10 +83,21 @@ function findObj(name) {
 /*
 * Create houses around border of my town, and perhaps one in the middle.
 */
-grobjects.push(new House("house1", [0.0,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 0));
-grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 1));
-grobjects.push(new House("house1", [-planeSz,0.0,planeSz], 1.5, 2.0, 1.0, 0.5, 2));
-grobjects.push(new House("house1", [0.0,0.0,centerSz], 1.5, 2.0, 1.0, 0.5, 3));
+//grobjects.push(new House("house1", [0.0,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 0));
+//grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 1));
+//grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 2));
+// LHS HOUSES
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, 1));
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 1));
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 1));
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 1));
+
+// RHS HOUSES
+grobjects.push(new House("house1", [planeSz-1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, 3));
+grobjects.push(new House("house1", [planeSz-1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 3));
+grobjects.push(new House("house1", [planeSz-1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 3));
+grobjects.push(new House("house1", [planeSz-1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 3));
+//grobjects.push(new House("house1", [0.0,0.0,centerSz], 1.5, 2.0, 1.0, 0.5, 3));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));

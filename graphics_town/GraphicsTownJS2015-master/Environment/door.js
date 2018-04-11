@@ -18,7 +18,7 @@ var Door = undefined;
     var buffers = undefined;
 
     // Constructor for Door (opens and closes over time)
-    Door = function DoorRect(name, position, height, width, depth, color, dirFace, size) {
+    Door = function DoorRect(name, position, height, width, depth, color, dirFace, rectLength, rectDepth, size) {
       this.name = name;
       this.position = position || [0,0,0];
       this.size = size || 1.0;
@@ -28,6 +28,8 @@ var Door = undefined;
       this.color = color || [.8,.7,.2];
 
       this.dirFace = dirFace;
+      this.rectLength = rectLength;
+      this.rectDepth = rectDepth;
 
       this.lastOpened = -1; // to be set in init
       this.openTime = Math.random() * 5000;
@@ -77,23 +79,31 @@ var Door = undefined;
     Door.prototype.draw = function(drawingState) {
         // apply transforms for opening and closing
         //-- use drawingState.realtime
-        var modelM = twgl.m4.translation(this.position);
-        twgl.m4.scale(modelM, [this.size, this.size, this.size], modelM);
+        var modelM = twgl.m4.identity();
+        twgl.m4.translate(modelM, this.position, modelM);
+        // dirFace                      // 0 means door faces [0,0,1]
+                              // 1 means door faces [1,0,0]
+                              // 2 means door faces [0,0,-1]
+                              // 3 means door faces [-1,0,0]
         switch(this.dirFace) {
             case 3:
                 // rotate about y axis -pi/2
-                twgl.m4.rotateY(modelM, Math.PI/2, modelM);
+                twgl.m4.rotateY(modelM, -Math.PI/2, modelM);
+                twgl.m4.translate(modelM, [-1*this.rectLength - this.width/2,0,this.rectDepth - this.depth], modelM);
                 break;
             case 2:
                 // rotate about y axis pi
                 twgl.m4.rotateY(modelM, Math.PI, modelM);
+                twgl.m4.translate(modelM, [this.rectLength - this.width,0,2*this.rectDepth], modelM);
                 break;
             case 1:
                 // rotate about y axis pi/2
-                twgl.m4.rotateY(modelM, -Math.PI/2, modelM);
+                twgl.m4.rotateY(modelM, Math.PI/2, modelM);
+                twgl.m4.translate(modelM, [this.rectLength - this.width/2,0,this.depth], modelM);
                 break;
             // default is 0; do nothing
         }
+        twgl.m4.scale(modelM, [this.size, this.size, this.size], modelM);
 
         var gl = drawingState.gl;
         if(this.doorStatus == 0 && drawingState.realtime - this.lastOpened > this.openTime) {
