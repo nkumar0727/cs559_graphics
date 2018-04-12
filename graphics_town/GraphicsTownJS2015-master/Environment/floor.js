@@ -44,7 +44,8 @@ var centerSz = centerSz || 5;
             twgl.setBuffersAndAttributes(gl,shaderProgram,buffers);
             twgl.setUniforms(shaderProgram,{
                 view:drawingState.view,
-                proj:drawingState.proj
+                proj:drawingState.proj,
+                light:drawingState.sunDirection
             });
             twgl.drawBufferInfo(gl, gl.TRIANGLES, buffers);
         },

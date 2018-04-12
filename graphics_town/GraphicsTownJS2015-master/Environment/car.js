@@ -6,7 +6,7 @@ var grobjects = grobjects || [];
 // allow the constructor to be "leaked" out
 var Car = undefined;
 var carCount = 0;
-var step = 1.2;
+var step = 0.2;
 
 // this is a function that runs at loading time (note the parenthesis at the end)
 (function() {
@@ -28,69 +28,77 @@ var step = 1.2;
           // 1 means going towards [1,0,0]
           // 2 means going towards [0,0,-1]
           // 3 means going towards [-1,0,0]
-/*
-        this.position = position || [0,0,0];
-        this.size = size || 1.0;
+
+    //    this.position = position || [0,0,0];
+      //  this.size = size || 1.0;
         this.height = height || 0.5;
         this.width = width || 0.25;
         this.depth = depth || 0.05;
-        this.color = color || [.2,.5,.3];
-        */
+      //  this.color = color || [.2,.5,.3];
+        //*/
         this.base = new Rect("car"+carCount, position, height, width, depth, color, dirFace | 0, size);
+        this.front = new Rect("car"+carCount, [position[0]+width, position[1], position[2]],
+          height*3/4, width*3/4, depth/4, color, dirFace | 0, size);
         //this.dirFace = dirFace;
         carCount += 1;
     }
     Car.prototype.init = function(drawingState) {
         this.base.init(drawingState);
+        this.front.draw(drawingState);
     };
     Car.prototype.draw = function(drawingState) {
         // 0 if simply step forward
         // 1 if turning needed
         var progress = 0;
-        //console.log("Car Position: "+ this.currPos);
         switch(this.currDir) {
             case 0:
-                if(this.currPos[2] + step >= 5.0) {
-                    // rotate car pi/2 anti-clock
-                    console.log("turn0");
+                if(this.base.position[2] + step >= centerSz + 0.2) {
                     progress = 1;
                     this.currDir = 1;
                 }
-                else
-                    this.currPos[2] += step;
+                else {
+                  this.base.position[2] += step;
+                  this.front.position[2] += step;
+                }
                 break;
             case 1:
-                if(this.currPos[0] + step >= 5.0) {
-                    // rotate car pi/2 anti-clock
-                    console.log("turn1");
+                if(this.base.position[0] + step >= centerSz + 0.2) {
                     progress = 1;
                     this.currDir = 2;
                 }
-                else
-                    this.currPos[0] += step;
+                else {
+                    this.base.position[0] += step;
+                    this.front.position[0] += step;
+                }
                 break;
             case 2:
-                if(this.currPos[2] - step <= -5.0) {
-                    // rotate car pi/2 anti-clock
-                    console.log("turn2");
+                if(this.base.position[2] - step <= -centerSz - 0.2) {
                     progress = 1;
                     this.currDir = 3;
                 }
-                else
-                    this.currPos[2] -= step;
+                else {
+                  this.base.position[2] -= step;
+                  this.front.position[2] -= step;
+                }
                 break;
             case 3:
-                if(this.currPos[0] - step <= -5.0) {
-                    // rotate car pi/2 anti-clock
-                    console.log("turn3");
+                if(this.base.position[0] - step <= -centerSz - 0.2) {
                     progress = 1;
                     this.currDir = 0;
                 }
-                else
-                    this.currPos[0] -= step;
+                else {
+                  this.base.position[0] -= step;
+                  this.front.position[0] -= step;
+                }
                 break;
         }
-        this.base.draw(drawingState, this.currDir, progress);
+        if(progress == 1) {
+          this.front.position = [this.base.position[0] + this.width,
+            this.base.position[1], this.base.position[2]];
+        }
+
+        this.base.draw(drawingState, progress, this.currDir);
+        this.front.draw(drawingState, progress, this.currDir);
     };
     Car.prototype.center = function(drawingState) {
         return this.position;
@@ -104,7 +112,7 @@ var step = 1.2;
 // rid of cubes, just don't load this file.
 
 
-grobjects.push(new Car("Car1", [-centerSz,0.0,2.0], 1,0.5,0.25, [0.4, 0.0, .6], 0, 1));
+grobjects.push(new Car("Car1", [-centerSz,0.0,2.0], 1,1.0,2.0, [0.4,0.8,0.6], 0, 1));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));

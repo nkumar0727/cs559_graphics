@@ -67,7 +67,7 @@ var Rect = undefined;
             buffers = twgl.createBufferInfoFromArrays(drawingState.gl, arrays);
         }
     };
-    Rect.prototype.draw = function(drawingState, dir, progress) {
+    Rect.prototype.draw = function(drawingState, progress, dir) {
         var modelM = twgl.m4.identity();
         //var modelM = twgl.m4.scaling([this.width, this.height, this.depth]);
         twgl.m4.translate(modelM, [this.position[0],
@@ -91,28 +91,14 @@ var Rect = undefined;
                   break;
               // default is 0; do nothing
           }
-          if(dir != null && progress != null) {
-              //console.log("in here");
-              if(progress == 0) {
-                  // step
-                  switch(dir) {
-                      case 0:
-                        twgl.m4.translate(modelM, [0,0,1.2], modelM);
-                        break;
-                      case 1:
-                        twgl.m4.translate(modelM, [1.2,0,0], modelM);
-                        break;
-                      case 2:
-                        twgl.m4.translate(modelM, [0,0,-1.2], modelM);
-                        break;
-                      case 3:
-                        twgl.m4.translate(modelM, [-1.2,0,0], modelM);
-                        break;
-                  }
-              }
-              else // turn
-                twgl.m4.rotateY(modelM, -Math.PI/2, modelM);
+
+          if(progress != null && dir != null) {
+            for(var i = 0; i < dir; ++i) {
+              twgl.m4.rotateY(modelM, -Math.PI/2, modelM);
+            }
           }
+
+
         twgl.m4.scale(modelM, [this.size*this.width,
             this.size*this.height, this.size*this.depth], modelM);
         var gl = drawingState.gl;
