@@ -5,7 +5,8 @@ var grobjects = grobjects || [];
 
 // allow the constructor to be "leaked" out
 var Car = undefined;
-//var DoorRect = undefined;
+var carCount = 0;
+var step = 1.2;
 
 // this is a function that runs at loading time (note the parenthesis at the end)
 (function() {
@@ -18,92 +19,80 @@ var Car = undefined;
     var buffers = undefined;
 
     // constructor for Cubes
-    Rect = function Rect(name, position, height, width, depth, color, dirFace, size) {
-        this.name = name;
+    Car = function Car(name, position, height, width, depth, color, dirFace, size) {
+        this.name = "car"+carCount;
+        this.position = position;
+        this.currPos = [position[0], position[1], position[2]];
+        this.currDir = 0;    // currDir
+            // 0 means going towards[0,0,1]
+          // 1 means going towards [1,0,0]
+          // 2 means going towards [0,0,-1]
+          // 3 means going towards [-1,0,0]
+/*
         this.position = position || [0,0,0];
         this.size = size || 1.0;
         this.height = height || 0.5;
         this.width = width || 0.25;
         this.depth = depth || 0.05;
         this.color = color || [.2,.5,.3];
-
-        this.dirFace = dirFace;
+        */
+        this.base = new Rect("car"+carCount, position, height, width, depth, color, dirFace | 0, size);
+        //this.dirFace = dirFace;
+        carCount += 1;
     }
-    Rect.prototype.init = function(drawingState) {
-        var gl = drawingState.gl;
-        if(!shaderProgram) {
-            shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
-        }
-        if(!buffers) {
-            var d = this.depth; var w = this.width; var h = this.height;
-            var arrays = {
-                //  3 components = triangles
-                vpos: { numComponents: 3, data: [
-                    // make sure that these are in same order as cube triangles
-                    0,h,0, 0,0,0, w,0,0,   w,0,0, w,h,0, 0,0,0,  // back
-                    0,h,d, 0,0,d, w,0,d,   w,0,d, w,h,d, 0,h,d,  // front
-                    0,0,0, 0,0,d, w,0,d,   w,0,d, w,0,0, 0,0,0,  // hottom
-                    0,h,0, 0,h,d, w,h,d,   w,h,d, w,h,0, 0,h,0,  // top
-                    0,0,0, 0,0,d, 0,h,0,     0,h,0, 0,h,d, 0,0,d,    // left
-                    w,0,0, w,0,d, w,h,0,     w,h,0, w,h,d, w,0,d,    // right
-                    /*
-                    -w,h,0, -w,0,0, w,0,0,   w,0,0, w,h,0, -w,h,0,    // back
-                    -w,h,d, -w,0,d, w,0,d,   w,0,d, w,h,d, -w,h,d,    // front
-                    -w,0,0, -w,0,d, w,0,d,   w,0,d, w,0,0, -w,0,0,   // bottom
-                    -w,h,0, -w,h,d, w,h,d,   w,h,d, w,h,0, -w,h,0,   // top
-                    -w,0,0, -w,0,d, -w,h,0,   -w,h,0, -w,h,d, -w,0,d,   // left
-                    w,0,0, w,0,d, w,h,0,   w,h,0, w,h,d, w,0,d,   // right
-                    */
-                ]},
-                vnormal : { numComponents: 3, data : [
-                    // normals for cube part
-                    0,0,-1, 0,0,-1, 0,0,-1,     0,0,-1, 0,0,-1, 0,0,-1,
-                    0,0,1, 0,0,1, 0,0,1,        0,0,1, 0,0,1, 0,0,1,
-                    0,-1,0, 0,-1,0, 0,-1,0,     0,-1,0, 0,-1,0, 0,-1,0,
-                    0,1,0, 0,1,0, 0,1,0,        0,1,0, 0,1,0, 0,1,0,
-                    -1,0,0, -1,0,0, -1,0,0,     -1,0,0, -1,0,0, -1,0,0,
-                    1,0,0, 1,0,0, 1,0,0,        1,0,0, 1,0,0, 1,0,0,
-                ]}
-            };
-            buffers = twgl.createBufferInfoFromArrays(drawingState.gl, arrays);
-        }
+    Car.prototype.init = function(drawingState) {
+        this.base.init(drawingState);
     };
-    Rect.prototype.draw = function(drawingState) {
-        var modelM = twgl.m4.translation([this.position[0],
-          this.position[1], this.position[2]]);
-          // dirFace                      // 0 means door faces [0,0,1]
-                                          // 1 means door faces [1,0,0]
-                                          // 2 means door faces [0,0,-1]
-                                          // 3 means door faces [-1,0,0]
-          switch(this.dirFace) {
-              case 3:
-                  // rotate about y axis -pi/2
-                  twgl.m4.rotateY(modelM, Math.PI/2, modelM);
-                  break;
-              case 2:
-                  // rotate about y axis pi
-                  twgl.m4.rotateY(modelM, Math.PI, modelM);
-                  break;
-              case 1:
-                  // rotate about y axis pi/2
-                  twgl.m4.rotateY(modelM, Math.PI/2, modelM);
-                  break;
-              // default is 0; do nothing
-          }
-        twgl.m4.scale(modelM, [this.size, this.size, this.size], modelM);
-        var gl = drawingState.gl;
-        gl.useProgram(shaderProgram.program);
-        twgl.setBuffersAndAttributes(gl, shaderProgram, buffers);
-        twgl.setUniforms(shaderProgram, {
-            view: drawingState.view,
-            proj: drawingState.proj,
-            lightdir: drawingState.sunDirection,
-            cubecolor: this.color,
-            model: modelM
-        });
-        twgl.drawBufferInfo(gl, gl.TRIANGLES, buffers);
+    Car.prototype.draw = function(drawingState) {
+        // 0 if simply step forward
+        // 1 if turning needed
+        var progress = 0;
+        //console.log("Car Position: "+ this.currPos);
+        switch(this.currDir) {
+            case 0:
+                if(this.currPos[2] + step >= 5.0) {
+                    // rotate car pi/2 anti-clock
+                    console.log("turn0");
+                    progress = 1;
+                    this.currDir = 1;
+                }
+                else
+                    this.currPos[2] += step;
+                break;
+            case 1:
+                if(this.currPos[0] + step >= 5.0) {
+                    // rotate car pi/2 anti-clock
+                    console.log("turn1");
+                    progress = 1;
+                    this.currDir = 2;
+                }
+                else
+                    this.currPos[0] += step;
+                break;
+            case 2:
+                if(this.currPos[2] - step <= -5.0) {
+                    // rotate car pi/2 anti-clock
+                    console.log("turn2");
+                    progress = 1;
+                    this.currDir = 3;
+                }
+                else
+                    this.currPos[2] -= step;
+                break;
+            case 3:
+                if(this.currPos[0] - step <= -5.0) {
+                    // rotate car pi/2 anti-clock
+                    console.log("turn3");
+                    progress = 1;
+                    this.currDir = 0;
+                }
+                else
+                    this.currPos[0] -= step;
+                break;
+        }
+        this.base.draw(drawingState, this.currDir, progress);
     };
-    Rect.prototype.center = function(drawingState) {
+    Car.prototype.center = function(drawingState) {
         return this.position;
     }
 
@@ -114,7 +103,8 @@ var Car = undefined;
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
 
-//grobjects.push(new Rect("rect1", [0.0,0.5,0.0], 1,0.5,0.25));
+
+grobjects.push(new Car("Car1", [-centerSz,0.0,2.0], 1,0.5,0.25, [0.4, 0.0, .6], 0, 1));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));
