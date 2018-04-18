@@ -1,77 +1,168 @@
-function setup() {
-  var canvas = document.getElementById('myCanvas');
-  var context = canvas.getContext('2d');
-  var m4 = twgl.m4;
+// draw a textured cube using WebGL
+//
+// written by sifakis on October stes18, 2015
 
-  var slider1 = document.getElementById('slider1');
-  slider1.value = 0;
-  var slider2 = document.getElementById('slider2');
-  slider2.value = 0;
+function start() { "use strict";
 
-  function moveToTx(x,y,z,Tx) {
-    var loc = [x,y,z];
-    var locTx = m4.transformPoint(Tx,loc);
-    context.moveTo(locTx[0],locTx[1]);
-  }
+    // Get canvas, WebGL context, twgl.m4
+    var canvas = document.getElementById("mycanvas");
+    var gl = canvas.getContext("webgl");
+    var m4 = twgl.m4;
 
-  function lineToTx(x,y,z,Tx) {
-    var loc = [x,y,z];
-    var locTx = m4.transformPoint(Tx,loc);
-    context.lineTo(locTx[0],locTx[1]);
-  }
+    // Sliders at center
+    var slider1 = document.getElementById('slider1');
+    slider1.value = 0;
+    var slider2 = document.getElementById('slider2');
+    slider2.value = 0;
 
-  function drawAxes(Tx) {
-    // A little cross on the front face, for identification
-    moveToTx(0,0,0,Tx);lineToTx(100,0,0,Tx);context.stroke();
-    moveToTx(0,0,0,Tx);lineToTx(0,150,0,Tx);context.stroke();
-    moveToTx(0,0,0,Tx);lineToTx(0,0,200,Tx);context.stroke();
-  }
+    // Read shader source
+    var vertexSource = document.getElementById("vs").text;
+    var fragmentSource = document.getElementById("fs").text;
 
-  function drawCube(Tx) {
-    // A little cross on the front face, for identification
-    moveToTx(180,200,100,Tx);lineToTx(220,200,100,Tx);context.stroke();
-    moveToTx(200,180,100,Tx);lineToTx(200,220,100,Tx);context.stroke();
-    // Twelve edges of a cube
-    moveToTx(100,100,100,Tx);lineToTx(300,100,100,Tx);
-    lineToTx(300,300,100,Tx);lineToTx(100,300,100,Tx);context.stroke();
-    moveToTx(300,100,100,Tx);lineToTx(300,100,300,Tx);
-    lineToTx(300,300,300,Tx);lineToTx(300,300,100,Tx);context.stroke();
-    moveToTx(300,100,300,Tx);lineToTx(100,100,300,Tx);
-    lineToTx(100,300,300,Tx);lineToTx(300,300,300,Tx);context.stroke();
-    moveToTx(100,100,300,Tx);lineToTx(100,100,100,Tx);
-    lineToTx(100,300,100,Tx);lineToTx(100,300,300,Tx);context.stroke();
-  }
+    // Compile vertex shader
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader,vertexSource);
+    gl.compileShader(vertexShader);
+    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+      alert(gl.getShaderInfoLog(vertexShader)); return null; }
 
-  function draw() {
-    // hack to clear the canvas fast
-    canvas.width = canvas.width;
+    // Compile fragment shader
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader,fragmentSource);
+    gl.compileShader(fragmentShader);
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      alert(gl.getShaderInfoLog(fragmentShader)); return null; }
 
-    var angle1 = slider1.value*0.01*Math.PI;
-    var angle2 = slider2.value*0.01*Math.PI;
-    var axis = [1,1,1];
+    // Attach the shaders and link
+    var shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      alert("Could not initialize shaders"); }
+    gl.useProgram(shaderProgram);
 
-    var Tmodel=m4.axisRotation(axis,angle2);
+    // with the vertex shader, we need to pass it positions
+    // as an attribute - so set up that communication
+    shaderProgram.PositionAttribute = gl.getAttribLocation(shaderProgram, "vPosition");
+    gl.enableVertexAttribArray(shaderProgram.PositionAttribute);
 
-    var eye=[700*Math.cos(angle1),400,700*Math.sin(angle1)];
-    var target=[0,0,0];
-    var up=[0,1,0];
-    var Tcamera=m4.inverse(m4.lookAt(eye,target,up));
+    shaderProgram.ColorAttribute = gl.getAttribLocation(shaderProgram, "vColor");
+    gl.enableVertexAttribArray(shaderProgram.ColorAttribute);
 
-    //var Tprojection=m4.ortho(-250,250,-200,300,-2,2);
-    var Tprojection=m4.perspective(Math.PI/3,1,5,100);
+    shaderProgram.texcoordAttribute = gl.getAttribLocation(shaderProgram, "vTexCoord");
+    gl.enableVertexAttribArray(shaderProgram.texcoordAttribute);
 
-    var Tviewport=m4.multiply(m4.scaling([200,-200,200]),m4.translation([200,200,0]));
+    // this gives us access to the matrix uniform
+    shaderProgram.MVPmatrix = gl.getUniformLocation(shaderProgram,"uMVP");
 
-    var Tcpv=m4.multiply(m4.multiply(Tcamera,Tprojection),Tviewport);
-    var Tmcpv=m4.multiply(Tmodel,Tcpv);
+    // Data ...
 
-    drawCube(Tmcpv);
-    drawAxes(Tcpv);
-  }
+    // vertex positions
+    var vertexPos = new Float32Array(
+        [  1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,
+           1, 1, 1,   1,-1, 1,   1,-1,-1,   1, 1,-1,
+           1, 1, 1,   1, 1,-1,  -1, 1,-1,  -1, 1, 1,
+          -1, 1, 1,  -1, 1,-1,  -1,-1,-1,  -1,-1, 1,
+          -1,-1,-1,   1,-1,-1,   1,-1, 1,  -1,-1, 1,
+           1,-1,-1,  -1,-1,-1,  -1, 1,-1,   1, 1,-1 ]);
 
-  slider1.addEventListener("input",draw);
-  slider2.addEventListener("input",draw);
-  draw();
+    // vertex colors
+    var vertexColors = new Float32Array(
+        [  0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,
+           1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,
+           0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0,
+           1, 1, 0,   1, 1, 0,   1, 1, 0,   1, 1, 0,
+           1, 0, 1,   1, 0, 1,   1, 0, 1,   1, 0, 1,
+           0, 1, 1,   0, 1, 1,   0, 1, 1,   0, 1, 1 ]);
 
+    // vertex texture coordinates
+    var vertexTextureCoords = new Float32Array(
+        [  0, 0,   1, 0,   1, 1,   0, 1,
+           1, 0,   1, 1,   0, 1,   0, 0,
+           0, 1,   0, 0,   1, 0,   1, 1,
+           0, 0,   1, 0,   1, 1,   0, 1,
+           1, 1,   0, 1,   0, 0,   1, 0,
+           1, 1,   0, 1,   0, 0,   1, 0 ]);
+
+    // element index array
+    var triangleIndices = new Uint8Array(
+        [  0, 1, 2,   0, 2, 3,    // front
+           4, 5, 6,   4, 6, 7,    // right
+           8, 9,10,   8,10,11,    // top
+          12,13,14,  12,14,15,    // left
+          16,17,18,  16,18,19,    // bottom
+	      20,21,22,  20,22,23 ]); // back
+
+    // we need to put the vertices into a buffer so we can
+    // block transfer them to the graphics hardware
+    var trianglePosBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, trianglePosBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexPos, gl.STATIC_DRAW);
+    trianglePosBuffer.itemSize = 3;
+    trianglePosBuffer.numItems = 24;
+
+    // a buffer for colors
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexColors, gl.STATIC_DRAW);
+    colorBuffer.itemSize = 3;
+    colorBuffer.numItems = 24;
+
+    // a buffer for textures
+    var textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexTextureCoords, gl.STATIC_DRAW);
+    textureBuffer.itemSize = 2;
+    textureBuffer.numItems = 24;
+
+    // a buffer for indices
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, triangleIndices, gl.STATIC_DRAW);
+
+    // Scene (re-)draw routine
+    function draw() {
+
+        // Translate slider values to angles in the [-pi,pi] interval
+        var angle1 = slider1.value*0.01*Math.PI;
+        var angle2 = slider2.value*0.01*Math.PI;
+
+        // Circle around the y-axis
+        var eye = [400*Math.sin(angle1),150.0,400.0*Math.cos(angle1)];
+        var target = [0,0,0];
+        var up = [0,1,0];
+
+        var tModel = m4.multiply(m4.scaling([100,100,100]),m4.axisRotation([1,1,1],angle2));
+        var tCamera = m4.inverse(m4.lookAt(eye,target,up));
+        var tProjection = m4.perspective(Math.PI/4,1,10,1000);
+
+        var tMVP=m4.multiply(m4.multiply(tModel,tCamera),tProjection);
+
+        // Clear screen, prepare for rendering
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        // Set up uniforms & attributes
+        gl.uniformMatrix4fv(shaderProgram.MVPmatrix,false,tMVP);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.vertexAttribPointer(shaderProgram.ColorAttribute, colorBuffer.itemSize,
+          gl.FLOAT,false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, trianglePosBuffer);
+        gl.vertexAttribPointer(shaderProgram.PositionAttribute, trianglePosBuffer.itemSize,
+          gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+        gl.vertexAttribPointer(shaderProgram.texcoordAttribute, textureBuffer.itemSize,
+          gl.FLOAT, false, 0, 0);
+
+	    // Do the drawing
+        gl.drawElements(gl.TRIANGLES, triangleIndices.length, gl.UNSIGNED_BYTE, 0);
+
+    }
+
+    slider1.addEventListener("input",draw);
+    slider2.addEventListener("input",draw);
+    draw();
 }
-window.onload = setup;

@@ -1,7 +1,0 @@
-color = ambient + diffuse + specular
-ambient - constant value (small), dependent on intrinsic pigmentation
-fNormal -- what does this do???
-
-Exam question
-	Performing interpolation on vertex vs pixel produce same results
-		-if light same color of object
