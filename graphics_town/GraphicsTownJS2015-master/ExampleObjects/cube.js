@@ -126,8 +126,9 @@ var SpinningCube = undefined;
 // normally, this would happen in a "scene description" file
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
+
+//grobjects.push(new Cube("cube1",[-2,0.5,0],1) );
 /*
-grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));
 grobjects.push(new Cube("cube3",[ 0, 0.5, -2],1 , [0,1,1]));
 grobjects.push(new Cube("cube4",[ 0,0.5,   2],1));

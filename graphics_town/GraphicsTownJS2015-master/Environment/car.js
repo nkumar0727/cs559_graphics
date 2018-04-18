@@ -12,6 +12,9 @@ var step = 0.2;
 (function() {
     "use strict";
 
+    //var a = shdr;
+
+
     // i will use this function's scope for things that will be shared
     // across all cubes - they can all have the same buffers and shaders
     // note - twgl keeps track of the locations for uniforms and attributes for us!

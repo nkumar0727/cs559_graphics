@@ -58,7 +58,7 @@ var flagCount = 0;
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
 //Flag = function Flag(name, position, height, width, depth, color, dirFace, size) {
-grobjects.push(new Flag("flag1", [0,0,0], 5.0, 0.2, 0.2, [0.8, 0, 0.8], 0, 1));
+//grobjects.push(new Flag("flag1", [0,0,0], 5.0, 0.2, 0.2, [0.8, 0, 0.8], 0, 1));
 //grobjects.push(new Rect("rect1", [0.0,0.5,0.0], 1,0.5,0.25));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
