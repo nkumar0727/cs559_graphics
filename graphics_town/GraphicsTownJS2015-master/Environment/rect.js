@@ -45,14 +45,6 @@ var Rect = undefined;
                     0,1,0, 0,1,1, 1,1,1,   1,1,1, 1,1,0, 0,1,0,  // top
                     0,0,0, 0,0,1, 0,1,0,     0,1,0, 0,1,1, 0,0,1,    // left
                     1,0,0, 1,0,1, 1,1,0,     1,1,0, 1,1,1, 1,0,1,    // right
-                    /*
-                    -w,h,0, -w,0,0, w,0,0,   w,0,0, w,h,0, -w,h,0,    // back
-                    -w,h,d, -w,0,d, w,0,d,   w,0,d, w,h,d, -w,h,d,    // front
-                    -w,0,0, -w,0,d, w,0,d,   w,0,d, w,0,0, -w,0,0,   // bottom
-                    -w,h,0, -w,h,d, w,h,d,   w,h,d, w,h,0, -w,h,0,   // top
-                    -w,0,0, -w,0,d, -w,h,0,   -w,h,0, -w,h,d, -w,0,d,   // left
-                    w,0,0, w,0,d, w,h,0,   w,h,0, w,h,d, w,0,d,   // right
-                    */
                 ]},
                 vnormal : { numComponents: 3, data : [
                     // normals for cube part
