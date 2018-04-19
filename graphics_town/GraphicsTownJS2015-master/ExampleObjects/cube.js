@@ -21,7 +21,7 @@ var grobjects = grobjects || [];
 
 // allow the two constructors to be "leaked" out
 var Cube = undefined;
-var SpinningCube = undefined;
+//var SpinningCube = undefined;
 
 // this is a function that runs at loading time (note the parenthesis at the end)
 (function() {
@@ -32,6 +32,7 @@ var SpinningCube = undefined;
     // note - twgl keeps track of the locations for uniforms and attributes for us!
     var shaderProgram = undefined;
     var buffers = undefined;
+    var texture = undefined;
 
     // constructor for Cubes
     Cube = function Cube(name, position, size, color) {
@@ -45,11 +46,72 @@ var SpinningCube = undefined;
         // create the shaders once - for all cubes
         if (!shaderProgram) {
             shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
-        }
+        }//float diffuse = .5 + .5*abs(dot(normal, vec4(lightdir,0.0)));
+        
         if (!buffers) {
             var arrays = {
+              vpos: { numComponents: 3, data: [
+                  1, 1, -1,  1, 1, 1, 1, -1, 1, //  
+                  1, -1, -1, -1, 1, 1, -1, 1, -1,
+
+                  -1, -1, -1, -1, -1, 1, -1, 1, 1, 
+                  1, 1, 1, 1, 1, -1, -1, 1, -1,
+
+                  -1, -1, -1, 1, -1, -1, 1, -1, 1, 
+                  -1, -1, 1, 1, 1, 1, -1, 1, 1,
+
+                  -1, -1, 1, 1, -1, 1, -1, 1, -1, 
+                  1, 1, -1, 1, -1, -1, -1, -1, -1
+                ]
+              },
+              vnormal:  { numComponents: 3, data:  [
+                  1, 0, 0,    1, 0, 0,     1, 0, 0,   1, 0, 0, 
+                 -1, 0, 0,   -1, 0, 0,    -1, 0, 0,  -1, 0, 0, 
+                  0, 1, 0,    0, 1, 0,     0, 1, 0,   0, 1, 0,  // TOP; correct 
+                  0, 1, 0,   0, 1, 0,    0, 1, 0,  0, 1, 0,
+                  0, 0, 1,    0, 0, 1,     0, 0, 1,   0, 0, 1, 
+                  0, 0, -1,   0, 0, -1,    0, 0, -1,  0, 0, -1] // BACK; correct
+              },
+              vtex: { numComponents: 2, data: [
+                  1, 0,   0, 0,    0, 1, 
+                  1, 1,   1, 0,    0, 0, 
+                  0, 1,   1, 1,    1, 0, 
+                  0, 0,  0, 1,     1, 1, 
+                  1, 0,  0, 0,     0, 1, 
+                  1, 1,  1, 0,     0, 0, 
+                  0, 1,  1, 1,     1, 0, 
+                  0, 0,  0, 1,     1, 1
+                ]
+              },
+              
+              indices:  [
+                  0, 1, 2, 
+                  0, 2, 3, 
+                  4, 5, 6, 
+                  4, 6, 7, 
+                  8, 9, 10, 
+                  8, 10, 11, 
+                  12, 13, 14, 
+                  12, 14, 15, 
+                  16, 17, 18, 
+                  16, 18, 19, 
+                  20, 21, 22, 
+                  20, 22, 23
+                ]
+                
+            };
+            buffers = twgl.createBufferInfoFromArrays(gl,arrays);
+          }
+          
+        /*
+        if (!buffers) {
+            var arrays = {
+             //   1, 1, -1, 1, 1, 1, 1, -1, 1,    1, -1, -1, -1, 1, 1, -1, 1, -1,
+              //  -1, -1, -1, -1, -1, 1, -1, 1,   1, 1, 1, 1, 1, 1, -1, -1, 1,
+               // -1, -1, -1, -1, 1, -1, -1, 1, -1,    1, -1, -1, 1, 1, 1, 1, -1, 1,
+               //  1, -1, -1, 1, 1, -1, 1, -1, 1,  -1, 1, 1, -1, 1, -1, -1, -1, -1, -1
                 vpos : { numComponents: 3, data: [
-                    -.5,-.5,-.5,  .5,-.5,-.5,  .5, .5,-.5,        -.5,-.5,-.5,  .5, .5,-.5, -.5, .5,-.5,    // back
+                    -.5,-.5,-.5,  .5,-.5,-.5,  .5, .5,-.5,        -.5,-.5,-.5,  .5, .5,-.5, -.5, .5,-.5,    // back (,)
                     -.5,-.5, .5,  .5,-.5, .5,  .5, .5, .5,        -.5,-.5, .5,  .5, .5, .5, -.5, .5, .5,    // front
                     -.5,-.5,-.5,  .5,-.5,-.5,  .5,-.5, .5,        -.5,-.5,-.5,  .5,-.5, .5, -.5,-.5, .5,    // bottom
                     -.5, .5,-.5,  .5, .5,-.5,  .5, .5, .5,        -.5, .5,-.5,  .5, .5, .5, -.5, .5, .5,    // top
@@ -63,11 +125,34 @@ var SpinningCube = undefined;
                     0,1,0, 0,1,0, 0,1,0,        0,1,0, 0,1,0, 0,1,0,
                     -1,0,0, -1,0,0, -1,0,0,     -1,0,0, -1,0,0, -1,0,0,
                     1,0,0, 1,0,0, 1,0,0,        1,0,0, 1,0,0, 1,0,0,
+                ]},
+                vtex : { numComponents: 2, data : [
+                    /*
+                    0.5,0, 0,0.5, 0,1,      0.5,1,  0,0,  0,0.5,
+                    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+                    
+                    
+                    0, 0,   1, 0,   1, 1,   0, 1,
+                    1, 0,   1, 1,   0, 1,   0, 0,
+                    0, 1,   0, 0,   1, 0,   1, 1,
+                    0, 0,   1, 0,   1, 1,   0, 1,
+                    1, 1,   0, 1,   0, 0,   1, 0,
+                    1, 1,   0, 1,   0, 0,   1, 0
+                    
                 ]}
             };
             buffers = twgl.createBufferInfoFromArrays(drawingState.gl,arrays);
         }
-
+        */
+        if(!texture) {
+            texture = twgl.createTexture(gl, {
+                src : dog_src ,
+                //wrap : gl.REPEAT,
+                crossOrigin: "anonymous",
+            });
+            //window.setTimeout(this.draw, 200);
+        }
     };
     Cube.prototype.draw = function(drawingState) {
         // we make a model matrix to place the cube in the world
@@ -78,8 +163,14 @@ var SpinningCube = undefined;
         gl.useProgram(shaderProgram.program);
         twgl.setBuffersAndAttributes(gl,shaderProgram,buffers);
         twgl.setUniforms(shaderProgram,{
-            view:drawingState.view, proj:drawingState.proj, lightdir:drawingState.sunDirection,
-            cubecolor:this.color, model: modelM });
+            view:drawingState.view, 
+            proj:drawingState.proj, 
+            lightdir:drawingState.sunDirection,
+            cubecolor:this.color, 
+            model: modelM,
+            texSampler: texture 
+        });
+        gl.bindTexture(gl.TEXTURE_2D, texture);
         twgl.drawBufferInfo(gl, gl.TRIANGLES, buffers);
     };
     Cube.prototype.center = function(drawingState) {
@@ -88,6 +179,7 @@ var SpinningCube = undefined;
 
 
     ////////
+    /*
     // constructor for Cubes
     SpinningCube = function SpinningCube(name, position, size, color, axis) {
         Cube.apply(this,arguments);
@@ -118,7 +210,7 @@ var SpinningCube = undefined;
     SpinningCube.prototype.center = function(drawingState) {
         return this.position;
     }
-
+*/
 
 })();
 
@@ -127,7 +219,7 @@ var SpinningCube = undefined;
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
 
-//grobjects.push(new Cube("cube1",[-2,0.5,0],1) );
+grobjects.push(new Cube("cube1",[0,0.5,0],1) );
 /*
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));
 grobjects.push(new Cube("cube3",[ 0, 0.5, -2],1 , [0,1,1]));

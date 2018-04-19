@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta name="description" content="Spinning cube example">
+    <meta charset="utf-8">
+    <title>WebGL texturing w/mipmap example</title>
+    <script src="./tex.js"></script>
+    <script id="vs" type="not-js">
+      attribute vec3 vPosition;
+      attribute vec3 vColor;
+      attribute vec2 vTexCoord;
+      varying vec3 fColor;
+      varying vec2 fTexCoord;
+      uniform mat4 uMVP;
+
+      void main(void) {
+	gl_Position = uMVP * vec4(vPosition, 1.0);
+	fColor = vColor;
+	fTexCoord = vTexCoord;
+      }
+    </script>
+
+    <script id="fs" type="not-js">
+      precision highp float;
+      varying vec3 fColor;
+      varying vec2 fTexCoord;
+      uniform sampler2D texSampler;
+
+      void main(void) {
+         vec4 texColor = texture2D(texSampler,fTexCoord);
+         gl_FragColor = vec4(texColor.xyz*fColor,texColor.a);
+         //gl_FragColor = vec4(texColor.xyz,texColor.a);
+      }
+    </script>
+
+  </head>
+
+  <body onload="start()">
+    <canvas id="mycanvas" width="500" height="500"></canvas><br>
+    <input id="slider1" type="range" min="-100" max="100" />
+    <input id="slider2" type="range" min="-100" max="100" />
+    <script src="http://graphics.cs.wisc.edu/JS/twgl-full.min.js"></script>
+  </body>
+
+</html>

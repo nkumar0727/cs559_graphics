@@ -87,8 +87,8 @@ function findObj(name) {
 //grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 1));
 //grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 2));
 // LHS HOUSES
-
-grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, [0.4,0.3,0.6], [0.2,0.3,0.8], [0.7,0.6,0,2]));
+/*
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, [0.4,0.3,0.6], [0.2,0.3,0.8], [0.7,0.6,2]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 1, [0.7,0.2,0.1], [0.8,0.3,0.8], [0.2,0.3,0.7]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 1, [0.3,0.8,0.2], [0.1,0.1,0.2], [0.7,0.6,0.5]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 1, [0.1,0.1,0.6], [0.8,0.5,0.5], [0.2,0.9,0.8]));
@@ -99,6 +99,7 @@ grobjects.push(new House("house1", [planeSz-1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 
 grobjects.push(new House("house1", [planeSz-1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 3, [0.3,0.3,0.3], [0.8,0.5,0.4], [0.2,0.1,0.3]));
 grobjects.push(new House("house1", [planeSz-1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 3, [0.7,0.1,0.1], [0.2,0.3,0.6], [0.1,0.3,0.2]));
 //grobjects.push(new House("house1", [0.0,0.0,centerSz], 1.5, 2.0, 1.0, 0.5, 3));
+*/
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));

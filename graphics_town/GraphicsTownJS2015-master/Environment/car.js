@@ -115,7 +115,7 @@ var step = 0.2;
 // rid of cubes, just don't load this file.
 
 
-grobjects.push(new Car("Car1", [-centerSz,0.0,2.0], 1,1.0,2.0, [0.4,0.8,0.6], 0, 1));
+//grobjects.push(new Car("Car1", [-centerSz,0.0,2.0], 1,1.0,2.0, [0.4,0.8,0.6], 0, 1));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));

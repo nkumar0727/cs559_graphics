@@ -13,18 +13,24 @@
 <script src="Libraries/panel.js"></script>
 <script src="Libraries/arcball.js"></script>
 <script src="grobject.js"></script>
+<script type="text/javascript" src="Textures/textures.js"></script>
 <!--<script src="ExampleObjects/ground.js"></script>-->
 
 <!-- This is where we load the objects for the world -->
 <!-- <script src="ExampleObjects/simplest.js"></script> -->
 <script src="ExampleObjects/texturedplane.js"></script>
+<script src="ExampleObjects/cube.js"></script>
+<!--
 <script src="Environment/rect.js"></script>
 <script src="Environment/pyramid.js"></script>
 <script src="Environment/flag.js"></script>
 <script src="Environment/door.js"></script>
+-->
 <script src="Environment/floor.js"></script>
+<!--
 <script src="Environment/house.js"></script>
 <script src="Environment/car.js"></script>
+-->
 
 
 <!-- I am adding the helicopter -->
@@ -72,6 +78,8 @@
 
     attribute vec3 vpos;
     attribute vec3 vnormal;
+    attribute vec2 vtex;
+
     varying vec3 outColor;
     varying vec3 lightLoc;
     varying vec3 fnormal;
@@ -82,6 +90,8 @@
     uniform mat4 model;
     uniform vec3 lightdir;
     uniform vec3 cubecolor;
+    
+    varying vec2 fTexCoord;
 
 
     void main(void) {
@@ -92,6 +102,7 @@
         lightLoc = lightdir;
         fnormal = vnormal;
         fpos = gl_Position.xyz / gl_Position.w;
+        fTexCoord = vtex;
     }
 </script>
 
@@ -116,7 +127,11 @@
     varying vec3 lightLoc;
     varying vec3 fnormal;
     varying vec3 fpos;
+    varying vec2 fTexCoord;
+
+    uniform sampler2D texSampler;
     void main(void) {
+        vec4 texCol = texture2D(texSampler, fTexCoord);
         vec3 L = normalize(lightLoc);
         vec3 N = normalize(fnormal);
         vec3 E = normalize(-fpos);
@@ -124,7 +139,7 @@
 
         vec3 ambient_color = 0.8 * outColor;
         vec3 specular_color = 0.4 * pow(max(0.0,dot(N,H)), 4.0) * vec3(1.0,0.8,1.0);
-        gl_FragColor = vec4(ambient_color+specular_color, 1.0);
+        gl_FragColor = vec4((ambient_color+specular_color)*texCol.xyz, 1.0);
     }
 </script>
 
