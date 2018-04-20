@@ -223,6 +223,8 @@ var grobjects = grobjects || [];
 
     var test = new TexturedPlane();
         test.position[1] = 3;
+        test.position[2] = 1;
+        test.position[0] = -2;
         test.scale = [2, 2];
 
     grobjects.push(test);

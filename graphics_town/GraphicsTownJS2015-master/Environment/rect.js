@@ -18,7 +18,8 @@ var Rect = undefined;
     var buffers = undefined;
 
     // constructor for Cubes
-    Rect = function Rect(name, position, height, width, depth, color, dirFace, size) {
+    Rect = function Rect(name, position, height, width, depth, color, dirFace, 
+        size) {
         this.name = name;
         this.position = position || [0,0,0];
         this.size = size || 1.0;
@@ -30,9 +31,10 @@ var Rect = undefined;
         this.dirFace = dirFace;
     }
     Rect.prototype.init = function(drawingState) {
+       // console.log("inside init");
         var gl = drawingState.gl;
         if(!shaderProgram) {
-            shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
+            shaderProgram = twgl.createProgramInfo(gl, ["rect-vs", "rect-fs"]);
         }
         if(!buffers) {
             var arrays = {
@@ -60,6 +62,7 @@ var Rect = undefined;
         }
     };
     Rect.prototype.draw = function(drawingState, progress, dir) {
+       
         var modelM = twgl.m4.identity();
         //var modelM = twgl.m4.scaling([this.width, this.height, this.depth]);
         twgl.m4.translate(modelM, [this.position[0],
@@ -93,7 +96,7 @@ var Rect = undefined;
 
         twgl.m4.scale(modelM, [this.size*this.width,
             this.size*this.height, this.size*this.depth], modelM);
-        var gl = drawingState.gl;
+            var gl = drawingState.gl;
         gl.useProgram(shaderProgram.program);
         twgl.setBuffersAndAttributes(gl, shaderProgram, buffers);
         twgl.setUniforms(shaderProgram, {
@@ -115,8 +118,11 @@ var Rect = undefined;
 // normally, this would happen in a "scene description" file
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
-
-//grobjects.push(new Rect("rect1", [0.0,0.5,0.0], 1,0.5,0.25));
+/*
+*Rect = function Rect(name, position, height, width, depth, color, dirFace, 
+        size, texture_input) {
+*/
+//grobjects.push(new Rect("rect1", [0.0,0.5,0.0], 3,3,3, [0.0,0.4,0.8], 0, 1));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));

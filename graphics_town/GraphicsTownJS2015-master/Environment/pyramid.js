@@ -34,7 +34,7 @@ var Pyramid = undefined;
     Pyramid.prototype.init = function(drawingState) {
         var gl = drawingState.gl;
         if(!shaderProgram) {
-            shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
+            shaderProgram = twgl.createProgramInfo(gl, ["rect-vs", "rect-fs"]);
         }
         if(!buffers) {
             var arrays = {
@@ -103,6 +103,10 @@ var Pyramid = undefined;
 
         if(this.dirFace == 4 || this.dirFace == 5) {// if this is a flag, rotate about Y in circle
             twgl.m4.rotateX(modelM, this.flagAngle, modelM);
+            this.flagAngle += 0.01;
+        }
+        else if(this.dirFace == 6) {
+            twgl.m4.rotateY(modelM, this.flagAngle, modelM);
             this.flagAngle += 0.01;
         }
 

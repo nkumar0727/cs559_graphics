@@ -39,12 +39,15 @@ var houseCount = 0; // total number of houses; used as an identifier
             rotDoorCoords[-position[2]+depth, position[1],position[0]+(width/2 - doorWidth/2)];
         console.log(rotDoorCoords);
         */
-      //  this.cube = new Cube("cube" + houseCount, [0.0,0.5,0.0], 1, roofColor | [0.7,0.2,0.2]);
-      //Rect = function Rect(name, position, height, width, depth, color, size) {
+      /*
+*Rect = function Rect(name, position, height, width, depth, color, dirFace, 
+    size, texture_input) {
+*/
         this.base = new Rect("rect"+houseCount, position, height, width, depth, baseColor, dirFace | 0, size);
+        console.log("created base rectangle");
       //  Pyramid = function Pyramid(name, position, height, width, color, size) {
         this.roof = new Pyramid("pyramid"+houseCount, [position[0], position[1]+height, position[2]],
-          height * downScale, width, depth,roofColor, dirFace | 0, size);
+          height * downScale, width, depth,roofColor, dirFace | 0, size);   // TODO: pyramid textures
         this.door = new Door("d_rect"+houseCount, rotDoorCoords, height * downScale,
           doorWidth, doorThick, doorColor, dirFace | 0, width, depth);
         houseCount += 1;
@@ -79,16 +82,18 @@ function findObj(name) {
     return rv;
 };
 //House = function House(name, position, height, width, depth, doorWidth,
-//  baseColor, roofColor, doorColor, size) {
+//  baseColor, roofColor, doorColor, size, texture_input) {
 /*
 * Create houses around border of my town, and perhaps one in the middle.
+House = function House(name, position, height, width, depth, doorWidth,  dirFace,
+      baseColor, roofColor, doorColor, size, texture_input) {    // CHANGE: color -> baseColor
 */
-//grobjects.push(new House("house1", [0.0,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 0));
+//grobjects.push(new House("house1", [0.0,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 0, [0.7,0.5,0.1], [0.2,0.1,0.7], [0.5,0.8,0.1], 2, wood_src));
 //grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 1));
 //grobjects.push(new House("house1", [-planeSz,0.0,0.0], 1.5, 2.0, 1.0, 0.5, 2));
 // LHS HOUSES
-/*
-grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, [0.4,0.3,0.6], [0.2,0.3,0.8], [0.7,0.6,2]));
+
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, 1, [0.4,0.3,0.6], [0.2,0.3,0.8], [0.7,0.6,2]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 1, [0.7,0.2,0.1], [0.8,0.3,0.8], [0.2,0.3,0.7]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 1, [0.3,0.8,0.2], [0.1,0.1,0.2], [0.7,0.6,0.5]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 1, [0.1,0.1,0.6], [0.8,0.5,0.5], [0.2,0.9,0.8]));
@@ -98,8 +103,7 @@ grobjects.push(new House("house1", [planeSz-1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0
 grobjects.push(new House("house1", [planeSz-1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 3, [0.8,0.9,0.2], [0.1,0.3,0.1], [0.9,0.6,0.4]));
 grobjects.push(new House("house1", [planeSz-1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 3, [0.3,0.3,0.3], [0.8,0.5,0.4], [0.2,0.1,0.3]));
 grobjects.push(new House("house1", [planeSz-1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 3, [0.7,0.1,0.1], [0.2,0.3,0.6], [0.1,0.3,0.2]));
-//grobjects.push(new House("house1", [0.0,0.0,centerSz], 1.5, 2.0, 1.0, 0.5, 3));
-*/
+
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));

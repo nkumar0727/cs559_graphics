@@ -47,7 +47,7 @@ var step = 0.2;
     }
     Car.prototype.init = function(drawingState) {
         this.base.init(drawingState);
-        this.front.draw(drawingState);
+        this.front.init(drawingState);
     };
     Car.prototype.draw = function(drawingState) {
         // 0 if simply step forward

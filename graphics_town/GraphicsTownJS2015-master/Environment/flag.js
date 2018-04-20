@@ -21,7 +21,7 @@ var flagCount = 0;
 
 
     // constructor for Cubes
-    Flag = function Flag(name, position, height, width, depth, color, dirFace, size) {
+    Flag = function Flag(name, position, height, width, depth, color, dirFace, size, texture_input) {
         this.name = "flag"+flagCount;
         /*
         this.position = position || [0,0,0];
@@ -31,7 +31,7 @@ var flagCount = 0;
         this.depth = depth || 0.05;
         this.color = color || [.2,.5,.3]; */
 
-        this.base = new Rect("rect"+flagCount, position, height, width, depth, color, dirFace | 0, size);
+        this.base = new Rect("rect"+flagCount, position, height, width, depth, color, dirFace | 0, size, texture_input);
         this.rotor1 = new Pyramid("pyramid"+flagCount, [position[0], position[1]+height-0.5, position[2]], 1.5,0.5,0.5, [0.8,0.8,0], 4, 1.0);
         this.rotor2 = new Pyramid("pyramid"+flagCount, [position[0], position[1]+height-0.5, position[2]], 1.5,0.5,0.5, [0.8,0.8,0], 5, 1.0);
         flagCount += 1;
@@ -58,7 +58,7 @@ var flagCount = 0;
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
 //Flag = function Flag(name, position, height, width, depth, color, dirFace, size) {
-//grobjects.push(new Flag("flag1", [0,0,0], 5.0, 0.2, 0.2, [0.8, 0, 0.8], 0, 1));
+grobjects.push(new Flag("flag1", [0,0,1], 5.0, 0.2, 0.2, [0.8, 0, 0.8], 0, 1, LoadedImageFiles["roof.jpg"].src));
 //grobjects.push(new Rect("rect1", [0.0,0.5,0.0], 1,0.5,0.25));
 /*
 grobjects.push(new Cube("cube1",[-2,0.5,   0],1) );

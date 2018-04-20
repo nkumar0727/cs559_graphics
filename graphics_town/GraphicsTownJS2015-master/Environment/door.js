@@ -40,28 +40,19 @@ var Door = undefined;
     Door.prototype.init = function(drawingState) {
         var gl = drawingState.gl;
         if(!shaderProgram) {
-            shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
+            shaderProgram = twgl.createProgramInfo(gl, ["rect-vs", "rect-fs"]);
         }
         if(!buffers) {
             var d = this.depth; var w = this.width; var h = this.height;
             var arrays = {
                 //  3 components = triangles
                 vpos: { numComponents: 3, data: [
-                    // make sure that these are in same order as cube triangles
-                    0,h,0, 0,0,0, w,0,0,   w,0,0, w,h,0, 0,0,0,  // back
-                    0,h,d, 0,0,d, w,0,d,   w,0,d, w,h,d, 0,h,d,  // front
-                    0,0,0, 0,0,d, w,0,d,   w,0,d, w,0,0, 0,0,0,  // hottom
-                    0,h,0, 0,h,d, w,h,d,   w,h,d, w,h,0, 0,h,0,  // top
-                    0,0,0, 0,0,d, 0,h,0,     0,h,0, 0,h,d, 0,0,d,    // left
-                    w,0,0, w,0,d, w,h,0,     w,h,0, w,h,d, w,0,d,    // right
-                    /*
-                    -w,h,0, -w,0,0, w,0,0,   w,0,0, w,h,0, -w,h,0,    // back
-                    -w,h,d, -w,0,d, w,0,d,   w,0,d, w,h,d, -w,h,d,    // front
-                    -w,0,0, -w,0,d, w,0,d,   w,0,d, w,0,0, -w,0,0,   // bottom
-                    -w,h,0, -w,h,d, w,h,d,   w,h,d, w,h,0, -w,h,0,   // top
-                    -w,0,0, -w,0,d, -w,h,0,   -w,h,0, -w,h,d, -w,0,d,   // left
-                    w,0,0, w,0,d, w,h,0,   w,h,0, w,h,d, w,0,d,   // right
-                    */
+                    0,1,0, 0,0,0, 1,0,0,   1,0,0, 1,1,0, 0,0,0,  // back
+                    0,1,1, 0,0,1, 1,0,1,   1,0,1, 1,1,1, 0,1,1,  // front
+                    0,0,0, 0,0,1, 1,0,1,   1,0,1, 1,0,0, 0,0,0,  // hottom
+                    0,1,0, 0,1,1, 1,1,1,   1,1,1, 1,1,0, 0,1,0,  // top
+                    0,0,0, 0,0,1, 0,1,0,     0,1,0, 0,1,1, 0,0,1,    // left
+                    1,0,0, 1,0,1, 1,1,0,     1,1,0, 1,1,1, 1,0,1,    // right
                 ]},
                 vnormal : { numComponents: 3, data : [
                     // normals for cube part
@@ -103,7 +94,7 @@ var Door = undefined;
                 break;
             // default is 0; do nothing
         }
-        twgl.m4.scale(modelM, [this.size, this.size, this.size], modelM);
+        twgl.m4.scale(modelM, [this.size*this.width, this.size*this.height, this.size*this.depth], modelM);
 
         var gl = drawingState.gl;
         if(this.doorStatus == 0 && drawingState.realtime - this.lastOpened > this.openTime) {
