@@ -18,7 +18,7 @@ var Door = undefined;
     var buffers = undefined;
 
     // Constructor for Door (opens and closes over time)
-    Door = function DoorRect(name, position, height, width, depth, color, dirFace, rectLength, rectDepth, size) {
+    Door = function DoorRect(name, position, height, width, depth, color, dirFace, rectLength, rectDepth, texture_input,size) {
       this.name = name;
       this.position = position || [0,0,0];
       this.size = size || 1.0;
@@ -35,12 +35,15 @@ var Door = undefined;
       this.openTime = Math.random() * 5000;
       this.doorAngle = 0;
       this.doorStatus = 0;
+
+    this.texture_input = texture_input;
+      this.texture = undefined;
     };
     //DoorRect.prototype = Object.create(Rect.prototype);
     Door.prototype.init = function(drawingState) {
         var gl = drawingState.gl;
         if(!shaderProgram) {
-            shaderProgram = twgl.createProgramInfo(gl, ["rect-vs", "rect-fs"]);
+            shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
         }
         if(!buffers) {
             var d = this.depth; var w = this.width; var h = this.height;
@@ -62,9 +65,25 @@ var Door = undefined;
                     0,1,0, 0,1,0, 0,1,0,        0,1,0, 0,1,0, 0,1,0,
                     -1,0,0, -1,0,0, -1,0,0,     -1,0,0, -1,0,0, -1,0,0,
                     1,0,0, 1,0,0, 1,0,0,        1,0,0, 1,0,0, 1,0,0,
+                ]},
+                vtex : { numComponents: 2, data : [
+                    0.25,0, 0,0, 0,1,      0.25,0,  0,1,  0.25,1,      // back
+                    0.5,0, 0.75,0, 0.75,1,      0.5,0,    0.75,1,  0.5,1,        // front
+                    0,0, 0,0, 0,0,      0,0,    0,0,  0,0,        // bottom
+                    0,0, 0,0, 0,0,      0,0,    0,0,  0,0,        // top
+                    0.25,0, 0.25,1, 0.5,1,      0.25,0,    0.5,1,  0.5,0,        // left
+                    1,0, 1,1, 0.75,1,      1,0,    0.75,1,  0.75,0,        // right
                 ]}
             };
             buffers = twgl.createBufferInfoFromArrays(drawingState.gl, arrays);
+        }
+        if(!this.texture) {
+            this.texture = twgl.createTexture(gl, {
+                src : this.texture_input ,
+                //wrap : gl.REPEAT,
+                crossOrigin: "anonymous",
+            });
+            //window.setTimeout(this.draw, 200);
         }
     };
     Door.prototype.draw = function(drawingState) {
@@ -125,8 +144,11 @@ var Door = undefined;
             proj: drawingState.proj,
             lightdir: drawingState.sunDirection,
             cubecolor: this.color,
-            model: modelM
+            model: modelM, 
+            texSampler: this.texture
         });
+
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
         twgl.drawBufferInfo(gl, gl.TRIANGLES, buffers);
     };
     Door.prototype.center = function(drawingState) {

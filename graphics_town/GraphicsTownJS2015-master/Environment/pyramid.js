@@ -18,7 +18,7 @@ var Pyramid = undefined;
     var buffers = undefined;
 
     // constructor for Pyramid
-    Pyramid = function Pyramid(name, position, height, width, depth, color, dirFace, size) {
+    Pyramid = function Pyramid(name, position, height, width, depth, color, dirFace, size, texture_input) {
         this.name = name;
         this.position = position || [0,0,0];
         this.size = size || 1.0;
@@ -30,11 +30,13 @@ var Pyramid = undefined;
         this.flagAngle = 0;
 
         this.dirFace = dirFace;
+        this.texture_input = texture_input;
+      this.texture = undefined;
     }
     Pyramid.prototype.init = function(drawingState) {
         var gl = drawingState.gl;
         if(!shaderProgram) {
-            shaderProgram = twgl.createProgramInfo(gl, ["rect-vs", "rect-fs"]);
+            shaderProgram = twgl.createProgramInfo(gl, ["cube-vs", "cube-fs"]);
         }
         if(!buffers) {
             var arrays = {
@@ -64,9 +66,23 @@ var Pyramid = undefined;
                     0,-0.5,-1.0, 0,-0.5,-1.0, 0,-0.5,-1.0,   // triangle 3
                     -1.0,0.5,0.0, -1.0,0.5,0.0, -1.0,0.5,0.0,   // triangle 4
                     */
+                ]},
+                vtex : { numComponents: 2, data : [
+                    1,0,  0,0,  0.5,1,
+                    1,0,  0,0,  0.5,1,
+                    1,0,  0,0,  0.5,1,
+                    1,0,  0,0,  0.5,1,
                 ]}
             };
             buffers = twgl.createBufferInfoFromArrays(drawingState.gl, arrays);
+        }
+        if(!this.texture) {
+            this.texture = twgl.createTexture(gl, {
+                src : this.texture_input ,
+                //wrap : gl.REPEAT,
+                crossOrigin: "anonymous",
+            });
+            //window.setTimeout(this.draw, 200);
         }
     };
     Pyramid.prototype.draw = function(drawingState) {
@@ -119,8 +135,10 @@ var Pyramid = undefined;
             proj: drawingState.proj,
             lightdir: drawingState.sunDirection,
             cubecolor: this.color,
-            model: modelM
+            model: modelM,
+            texSampler: this.texture 
         });
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
         twgl.drawBufferInfo(gl, gl.TRIANGLES, buffers);
     };
     Pyramid.prototype.center = function(drawingState) {

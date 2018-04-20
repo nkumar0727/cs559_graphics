@@ -47,9 +47,9 @@ var houseCount = 0; // total number of houses; used as an identifier
         console.log("created base rectangle");
       //  Pyramid = function Pyramid(name, position, height, width, color, size) {
         this.roof = new Pyramid("pyramid"+houseCount, [position[0], position[1]+height, position[2]],
-          height * downScale, width, depth,roofColor, dirFace | 0, size);   // TODO: pyramid textures
+          height * downScale, width, depth,roofColor, dirFace | 0, size, LoadedImageFiles["roof.jpg"].src);   // TODO: pyramid textures
         this.door = new Door("d_rect"+houseCount, rotDoorCoords, height * downScale,
-          doorWidth, doorThick, doorColor, dirFace | 0, width, depth);
+          doorWidth, doorThick, [1,1,1], dirFace | 0, width, depth, LoadedImageFiles["wood.jpg"].src);
         houseCount += 1;
     }
     House.prototype.init = function(drawingState) {
@@ -94,7 +94,7 @@ House = function House(name, position, height, width, depth, doorWidth,  dirFace
 // LHS HOUSES
 
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2], 1.5, 2.0, 1.0, 0.5, 1, [0.4,0.3,0.6], [0.2,0.3,0.8], [0.7,0.6,2]));
-grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 1, [0.7,0.2,0.1], [0.8,0.3,0.8], [0.2,0.3,0.7]));
+grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2], 1.5, 2.0, 1.0, 0.5, 1, [0.7,0.2,0.1], [0.8,0.3,0.1], [0.2,0.3,0.7]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,planeSz/2 -3.0], 1.5, 2.0, 1.0, 0.5, 1, [0.3,0.8,0.2], [0.1,0.1,0.2], [0.7,0.6,0.5]));
 grobjects.push(new House("house1", [-planeSz+1.2,0.0,-planeSz/2 + 3.0], 1.5, 2.0, 1.0, 0.5, 1, [0.1,0.1,0.6], [0.8,0.5,0.5], [0.2,0.9,0.8]));
 

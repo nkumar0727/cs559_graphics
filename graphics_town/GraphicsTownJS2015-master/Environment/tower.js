@@ -42,7 +42,7 @@ var towerCount = 0;
        this.base = new Cube("cube", position, size*2, texture_input, color);
        this.middle = new Cube("cube", [position[0], position[1]+size, position[2]], size*1.5, texture_input, color);
        this.top = new Cube("cube", [position[0], position[1]+2*size, position[2]], size, texture_input, color);
-       this.roof = new Pyramid("pyramid", [position[0]-size/2, position[1]+2*size, position[2]-size/2], size*1.5, size, size, color, 0, size);
+       this.roof = new Pyramid("pyramid", [position[0]-size/2, position[1]+2*size, position[2]-size/2], size*1.5, size, size, color, 0, size,LoadedImageFiles["roof.jpg"].src );
        towerCount += 1;
     }
     Tower.prototype.init = function(drawingState) {
