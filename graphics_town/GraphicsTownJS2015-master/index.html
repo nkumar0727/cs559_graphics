@@ -230,19 +230,37 @@
 
     }
 </script>
+
+
 <script id="floor-vs" type="not-js">
   precision highp float;
   attribute vec3 vpos;
+  attribute vec3 vnormal;
+  attribute vec2 vtex;
 
   varying vec3 fpos;
   varying vec3 lightLoc;
+  //varying vec3 outColor;
+  varying vec2 fTexCoord;
+  varying float part;
 
   uniform mat4 view;
+  uniform mat4 model;
   uniform mat4 proj;
   uniform vec3 light;
 
   void main(void) {
-    gl_Position = proj * view * vec4(vpos, 1.0);
+    // assign textures based on vpos??
+    if(vpos.x >= 0.75 || vpos.x <= -0.75)
+        part = 0.0;
+    else
+        part = 1.0;
+    gl_Position = proj * view * model *vec4(vpos, 1.0);
+    vec4 normal = normalize(model * vec4(vnormal,0.0));
+    //float diffuse = .5 + .5*abs(dot(normal, vec4(lightLoc,0.0)));
+    //outColor = cubecolor * diffuse;
+    //vnormal = normal;
+    fTexCoord = vtex;
     fpos = vpos / length(vpos);
     lightLoc = light;
   }
@@ -252,23 +270,40 @@
 
     varying vec3 fpos;
     varying vec3 lightLoc;
+    //varying vec3 outColor;
+    varying vec2 fTexCoord;
+    varying float part;
+
+    uniform sampler2D texSamplerGrass;
+    uniform sampler2D texSamplerTile;
+    uniform sampler2D texSamplerDirt;
+
+    const float dirtVisibility = 0.3;
 
     float inRange(vec3 pos, float bound) {
         return (pos.x >= -bound && pos.x <= bound && pos.z >= -bound && pos.z <= bound) ? 1.0 : 0.0;
     }
 
     void main(void) {
-        vec3 col = vec3(0.0,0.0,0.0);
-        float inBound = 0.3;
-        float outBound = 0.5;
-        float outRes = inRange(fpos, outBound);
-        float inRes = inRange(fpos, inBound);
-        if(inRes == 1.0 || (outRes == 0.0 && inRes == 0.0)) {
-            col.x = 0.4;
-            col.y = 0.8;
-        }
-        float coeff = abs(dot(lightLoc, vec3(1.0,1.0,1.0)));
-        gl_FragColor = vec4(1.0*col*coeff, 1.0);
+        vec4 texColGrass = texture2D(texSamplerGrass, fTexCoord);
+        vec4 texColTile = texture2D(texSamplerTile, fTexCoord);
+        vec4 texColDirt = dirtVisibility*texture2D(texSamplerDirt, fTexCoord);
+       // vec3 col = vec3(0.0,0.0,0.0);
+        //float inBound = 0.3;
+        //float outBound = 0.5;
+        //float outRes = inRange(fpos, outBound);
+        //float inRes = inRange(fpos, inBound);
+        //if(inRes == 1.0 || (outRes == 0.0 && inRes == 0.0)) {
+        //    col.x = 0.4;
+        //    col.y = 0.8;
+        //}
+        //float coeff = abs(dot(lightLoc, vec3(1.0,1.0,1.0)));
+        vec4 finalCol = vec4(0.0,0.0,0.0,0.0);
+        if(part == 0.0)
+            finalCol = texColGrass;
+        else
+            finalCol = texColTile + texColDirt;
+        gl_FragColor = vec4(finalCol.xyz, 1.0);
     }
 </script>
 </html>

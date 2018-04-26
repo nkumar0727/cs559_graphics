@@ -123,7 +123,7 @@ var cubeCount = 0;
     SpinningCube.prototype.draw = function(drawingState) {
         // we make a model matrix to place the cube in the world
         var modelM = twgl.m4.scaling([this.size,this.size,this.size]);
-        var theta = Number(drawingState.realtime)/600.0;
+        var theta = Number(drawingState.realtime)/800.0;
         if (this.axis == 'X') {
             twgl.m4.rotateX(modelM, theta, modelM);
         } else if (this.axis == 'Z') {
@@ -162,8 +162,8 @@ var cubeCount = 0;
 // normally, this would happen in a "scene description" file
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
-grobjects.push(new SpinningCube("cube",[0,0,0],100,LoadedImageFiles["rainbow.png"].src));
-grobjects.push(new SpinningCube("cube",[0,10,0],2,LoadedImageFiles["zach_3.jpg"].src, [1,1,1],'A'));
+grobjects.push(new SpinningCube("cube",[0,0,0],100,LoadedImageFiles["universe.png"].src));
+grobjects.push(new SpinningCube("cube",[0,10,0],2,LoadedImageFiles["rainbow.png"].src, [1,1,1],'A'));
 grobjects.push(new SpinningCube("cube",[4,10,0],2,LoadedImageFiles["my_design.jpg"].src, [1,1,1],'Y'));
 grobjects.push(new SpinningCube("cube",[-4,10,0],2,LoadedImageFiles["my_design.jpg"].src, [1,1,1],'A'));
 //grobjects.push(new Cube("cube1",[3,6,3],1.5,LoadedImageFiles["roof.jpg"].src));
