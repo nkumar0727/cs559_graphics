@@ -5,25 +5,31 @@
 
 var grobjects = grobjects || [];
 
-var planeSz = planeSz || 10;
-var centerSz = centerSz || 5;
+var planeSz = planeSz || 15;
+var centerSz = centerSz || 10;
 
 (function() {
     "use strict";
 
   var vertexPos = [
-    -1,0,-1,   -1,0,1,   -0.75,0,1,     // leftmost grass section
-    -0.75,0,1,   -1,0,-1,   -0.75,0,-1,
-    0.75,0,-1,   0.75,0,1,   1,0,1,     // rightmost grass section
-    1,0,1,   0.75,0,-1,   1,0,-1,
-    0.75,0,-1,   -0.75,0,-1,   -0.75,0,-0.75,   // topmost grass section
-    -0.75,0,-0.75,   0.75,0,-1,   0.75,0,-0.75,
-    0.75,0,0.75,   -0.75,0,0.75,   -0.75,0,1,   // bottommost grass section
-    -0.75,0,1,   0.75,0,0.75,   0.75,0,1,
+    -1,0,-1,   -1,0,1,   -0.51,0,1,     // leftmost grass section
+    -0.51,0,1,   -1,0,-1,   -0.51,0,-1,
+    0.51,0,-1,   0.51,0,1,   1,0,1,     // rightmost grass section
+    1,0,1,   0.51,0,-1,   1,0,-1,
+    0.51,0,-1,   -0.51,0,-1,   -0.51,0,-0.51,   // topmost grass section
+    -0.51,0,-0.51,   0.51,0,-1,   0.51,0,-0.51,
+    0.51,0,0.51,   -0.51,0,0.51,   -0.51,0,1,   // bottommost grass section
+    -0.51,0,1,   0.51,0,0.51,   0.51,0,1,
     -0.5,0,-0.5,   -0.5,0,0.5,   0.5,0,0.5,    // inside tile section
     0.5,0,0.5,   -0.5,0,-0.5,   0.5,0,-0.5,
-    // do road section...
-    // do square grass section...
+    /*
+    0.75,0,-1,   0.75,0,1,   1,0,1,     // rightmost road section
+    1,0,1,   0.75,0,-1,   1,0,-1,
+    0.75,0,-1,   -0.75,0,-1,   -0.75,0,-0.75,   // road grass section
+    -0.75,0,-0.75,   0.75,0,-1,   0.75,0,-0.75,
+    0.75,0,0.75,   -0.75,0,0.75,   -0.75,0,1,   // bottommost road section
+    -0.75,0,1,   0.75,0,0.75,   0.75,0,1,
+    */
     /*
     -1, 0, -1, -1, 0, 1, 1, 0, 1, // black street
     1, 0, 1, 1, 0, -1, -1, 0, -1,
@@ -114,7 +120,7 @@ var centerSz = centerSz || 5;
         model: modelM,
         texSamplerGrass: grassTexture,
         texSamplerTile: tileTexture,
-        texSamplerDirt: dirtTexture
+        texSamplerDirt: dirtTexture,
       });
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, grassTexture);

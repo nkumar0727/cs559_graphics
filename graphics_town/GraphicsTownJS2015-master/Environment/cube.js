@@ -71,8 +71,8 @@ var cubeCount = 0;
                 vtex : { numComponents: 2, data : [
                     0.25,0, 0,0, 0,1,      0.25,0,  0,1,  0.25,1,      // back
                     0.5,0, 0.75,0, 0.75,1,      0.5,0,    0.75,1,  0.5,1,        // front
-                    0,0, 0,0, 0,0,      0,0,    0,0,  0,0,        // bottom
-                    0,0, 0,0, 0,0,      0,0,    0,0,  0,0,        // top
+                    0,0, 0,1, 1,1,      0,0,    1,1,  1,0,        // bottom
+                    0,0, 0,1, 1,1,      0,0,    1,1,  1,0,        // top
                     0.25,0, 0.25,1, 0.5,1,      0.25,0,    0.5,1,  0.5,0,        // left
                     1,0, 1,1, 0.75,1,      1,0,    0.75,1,  0.75,0,        // right
                 ]}
@@ -92,6 +92,7 @@ var cubeCount = 0;
         // we make a model matrix to place the cube in the world
         var modelM = twgl.m4.scaling([this.size,this.size,this.size]);
         twgl.m4.setTranslation(modelM,this.position,modelM);
+            
         // the drawing coce is straightforward - since twgl deals with the GL stuff for us
         var gl = drawingState.gl;
         gl.useProgram(shaderProgram.program);
@@ -162,7 +163,7 @@ var cubeCount = 0;
 // normally, this would happen in a "scene description" file
 // but I am putting it here, so that if you want to get
 // rid of cubes, just don't load this file.
-grobjects.push(new SpinningCube("cube",[0,0,0],100,LoadedImageFiles["universe.png"].src));
+grobjects.push(new Cube("cube",[0,10,0],30,LoadedImageFiles["universe.png"].src), [1,1,1]);
 grobjects.push(new SpinningCube("cube",[0,10,0],2,LoadedImageFiles["rainbow.png"].src, [1,1,1],'A'));
 grobjects.push(new SpinningCube("cube",[4,10,0],2,LoadedImageFiles["my_design.jpg"].src, [1,1,1],'Y'));
 grobjects.push(new SpinningCube("cube",[-4,10,0],2,LoadedImageFiles["my_design.jpg"].src, [1,1,1],'A'));

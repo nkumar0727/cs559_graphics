@@ -251,7 +251,7 @@
 
   void main(void) {
     // assign textures based on vpos??
-    if(vpos.x >= 0.75 || vpos.x <= -0.75)
+    if(vpos.x > 0.5 || vpos.x < -0.5)
         part = 0.0;
     else
         part = 1.0;
@@ -270,7 +270,6 @@
 
     varying vec3 fpos;
     varying vec3 lightLoc;
-    //varying vec3 outColor;
     varying vec2 fTexCoord;
     varying float part;
 
@@ -278,7 +277,7 @@
     uniform sampler2D texSamplerTile;
     uniform sampler2D texSamplerDirt;
 
-    const float dirtVisibility = 0.3;
+    const float dirtVisibility = 0.2;
 
     float inRange(vec3 pos, float bound) {
         return (pos.x >= -bound && pos.x <= bound && pos.z >= -bound && pos.z <= bound) ? 1.0 : 0.0;
@@ -288,16 +287,7 @@
         vec4 texColGrass = texture2D(texSamplerGrass, fTexCoord);
         vec4 texColTile = texture2D(texSamplerTile, fTexCoord);
         vec4 texColDirt = dirtVisibility*texture2D(texSamplerDirt, fTexCoord);
-       // vec3 col = vec3(0.0,0.0,0.0);
-        //float inBound = 0.3;
-        //float outBound = 0.5;
-        //float outRes = inRange(fpos, outBound);
-        //float inRes = inRange(fpos, inBound);
-        //if(inRes == 1.0 || (outRes == 0.0 && inRes == 0.0)) {
-        //    col.x = 0.4;
-        //    col.y = 0.8;
-        //}
-        //float coeff = abs(dot(lightLoc, vec3(1.0,1.0,1.0)));
+     
         vec4 finalCol = vec4(0.0,0.0,0.0,0.0);
         if(part == 0.0)
             finalCol = texColGrass;

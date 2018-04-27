@@ -72,8 +72,8 @@ grobjects.push(new Tower("tower1", [2,0.5,2], 0.5, [1,1,1], LoadedImageFiles["ro
 grobjects.push(new Tower("tower1", [1,0.5,3.5], 0.5, [1,1,1], LoadedImageFiles["wood.jpg"].src));
 grobjects.push(new Tower("tower1", [-2,1,-2], 1, [1,1,1], LoadedImageFiles["zz.jpg"].src));
 grobjects.push(new Tower("tower1", [-2,1,2], 1, [1,1,1], LoadedImageFiles["grant.jpg"].src));
-//grobjects.push(new Tower("tower1", [2,2,-2], 2, [1,2,1], LoadedImageFiles["trump.jpg"].src));
-grobjects.push(new Tower("tower1", [2,2,-2], 2, [.1,.1,.1], "https://youtu.be/nm775_Dsx9A"));
+grobjects.push(new Tower("tower1", [2,2,-2], 2, [1,2,1], LoadedImageFiles["trump.jpg"].src));
+//grobjects.push(new Tower("tower1", [2,2,-2], 2, [.1,.1,.1], "https://youtu.be/nm775_Dsx9A"));
 /*
 grobjects.push(new Cube("cube2",[ 2,0.5,   0],1, [1,1,0]));
 grobjects.push(new Cube("cube3",[ 0, 0.5, -2],1 , [0,1,1]));
